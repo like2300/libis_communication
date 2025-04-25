@@ -17,6 +17,19 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://libis-communication.onrender.com',
+    # Add other trusted origins if needed (e.g., 'http://localhost:3000')
+]
+
+CSRF_COOKIE_SECURE = True  # Only send CSRF cookie over HTTPS
+SESSION_COOKIE_SECURE = True  # Only send session cookie over HTTPS
+
+CORS_ALLOWED_ORIGINS = [
+    'https://libis-communication.onrender.com',
+    # Other allowed origins
+]
+CORS_ALLOW_CREDENTIALS = True  # If using cookies/auth
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -50,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'libis_communication.urls'
@@ -112,6 +126,11 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+# settings.py
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Static files (CSS, JavaScript, Images)
