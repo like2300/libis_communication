@@ -1,0 +1,23 @@
+{% if media %}
+    {% if media.url|lower|slice:'-4:' == '.mp4' or media.url|lower|slice:'-5:' == '.webm' %}
+        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110">
+            <source src="{{ media.url }}" type="video/mp4">
+            Votre navigateur ne supporte pas les vidéos HTML5.
+        </video>
+    {% elif media.url|lower|slice:'-4:' == '.gif' %}
+        <img src="{{ media.url }}" 
+             alt="{{ titre }}" 
+             class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" 
+             loading="lazy" />
+    {% else %}
+        <img src="{{ media.url }}" 
+             alt="{{ titre }}" 
+             class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" 
+             loading="lazy" />
+    {% endif %}
+{% else %}
+    <div class="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center">
+        <span class="text-neutral-500 text-sm md:text-base">Aucun média disponible</span>
+    </div>
+{% endif %}
+<div class="absolute inset-0 bg-gradient-to-r from-neutral-950/70 to-neutral-950/50 md:bg-gradient-to-l md:from-neutral-950/70 md:to-neutral-950/50 transition-opacity duration-500 group-hover:opacity-0"></div>
