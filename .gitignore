@@ -1,2 +1,3 @@
 #  gitignore environment name env 
 .env
+env
