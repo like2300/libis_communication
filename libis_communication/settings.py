@@ -11,9 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-fallback-key-for-dev-only')
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv()) 
 
 # Application definition
 INSTALLED_APPS = [
@@ -22,10 +22,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles', 
     'core',
 ]
-
+ 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -113,7 +113,13 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = config('SECURE_BROWSER_XSS_FILTER', default=True, cast=bool)
     SECURE_CONTENT_TYPE_NOSNIFF = config('SECURE_CONTENT_TYPE_NOSNIFF', default=True, cast=bool)
     X_FRAME_OPTIONS = config('X_FRAME_OPTIONS', default='DENY', cast=str)
-    SECURE_PROXY_SSL_HEADER = config('SECURE_PROXY_SSL_HEADER', default=('HTTP_X_FORWARDED_PROTO', 'https'), cast=Csv())
+    SECURE_PROXY_SSL_HEADER = config('SECURE_PROXY_SSL_HEADER', default=('HTTP_X_FORWARDED_PROTO', 'https','http'), cast=Csv())
 
+# local settings eslse
+
+
+
+ 
+    
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

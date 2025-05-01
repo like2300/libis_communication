@@ -1,3 +1,9 @@
 #  gitignore environment name env 
 .env
 env
+certs 
+media
+staticfiles
+db.sqlite3
+
+settings.py
