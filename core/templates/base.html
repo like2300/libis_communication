@@ -11,6 +11,7 @@
     <link rel="icon" href="https://github.com/like2300/libis_communication/blob/main/core/static/lbs-removebg-preview.png?raw=true" type="image/png">
 
 
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
@@ -50,8 +51,16 @@
 
 <!-- drawer init and show -->
  
-    <button class="top-3 right-6  fixed z-30 md:z-50 text-white bg-red-300 hover:bg-red-800 font-medium rounded-full text-sm px-5 py-2.5 " type="button" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">
-    
+    <button class="top-3 right-6  fixed z-30 md:z-50    " type="button" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">
+    <lottie-player 
+    src="{% static 'lotties/lottieflow-menu-nav-11-14-991b1b-easey.json' %}"
+    background="transparent"
+    speed="1"  
+    class="h-6 w-6"
+    hover 
+    loop  
+    autoplay>
+</lottie-player>
     </button>
  
  
