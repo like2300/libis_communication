@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-fallback-key-for-dev-only')
-DEBUG = True
+DEBUG = config('DEBUG',default=True, cast=bool) or True
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv()) 
 

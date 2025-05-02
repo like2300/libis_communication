@@ -169,7 +169,7 @@
                 Nous partageons notre histoire avec vous dans cette section !
             </h2>
             <div class="mt-10 flex items-center justify-center gap-x-6">
-                <a class="isomorphic-link isomorphic-link--internal inline-flex items-center justify-center gap-2 rounded-xl bg-red-700 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                <a class="isomorphic-link isomorphic-link--internal  inline-flex items-center justify-center gap-2 rounded-full bg-red-700 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                     href=""> Lire maintenant
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd"
@@ -262,8 +262,8 @@
         
         <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div class="absolute bottom-0 left-0 right-0 p-4">
-                <h3 class="{% if forloop.first %}text-2xl{% else %}text-xl{% endif %} font-bold text-white">{{ project.titre }}</h3>
-                <p class="text-white">{{ project.description|truncatechars:100 }}</p>
+                <h3 class="{% if forloop.first %}text-2xl{% else %}text-lg{% endif %} font-bold text-white">{{ project.titre }}</h3>
+                <p class="text-white {% if forloop.first %}text-sm {% endif %} text-[12px]">{{ project.description|truncatechars:100 }}</p>
                 {% if project.lien %}
                 <a href="{{ project.lien }}" class="text-blue-300 hover:text-blue-100 mt-2 inline-block">Voir le projet</a>
                 {% endif %}

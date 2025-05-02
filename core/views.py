@@ -6,9 +6,9 @@ from django.urls import reverse
 
 # Accueil
 def home_view(request):
-    messages = MessageAccueil.objects.all()
-    equipe = TeamMember.objects.all()
-    project = Projet.objects.all()
+    messages = MessageAccueil.objects.all()[:3] 
+    equipe = TeamMember.objects.all()[:5] 
+    project = Projet.objects.all()[:5]
     return render(request, 'libis/home.html', {'messages': messages, 'equipe': equipe, 'projects': project})
 
 # À propos
