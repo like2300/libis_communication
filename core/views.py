@@ -8,7 +8,8 @@ from django.urls import reverse
 def home_view(request):
     messages = MessageAccueil.objects.all()
     equipe = TeamMember.objects.all()
-    return render(request, 'libis/home.html', {'messages': messages, 'equipe': equipe})
+    project = Projet.objects.all()
+    return render(request, 'libis/home.html', {'messages': messages, 'equipe': equipe, 'projects': project})
 
 # À propos
 def about_view(request):
