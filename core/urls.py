@@ -16,6 +16,10 @@ urlpatterns = [
     path('portfolio/', projet_list_view, name='portfolio'),
     path('portfolio/<int:id>/', projet_detail_view, name='projet_detail'),
 
+    # equipe/uls.py
+    path('equipe/', equipe_list_view, name='equipe'),
+    path('equipe/<int:id>/', equipe_detail_view, name='equipe_detail'),                                                                                 
+
     # blog/urls.py
     path('blog/', article_list_view, name='blog'),
     path('blog/<slug:slug>/', article_detail_view, name='article_detail'),

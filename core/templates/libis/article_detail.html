@@ -1,74 +1,121 @@
 {% extends "base.html" %}
-{% comment %} pge about.html {% endcomment %} 
-{% block content %}  
+{% comment %} page article.html {% endcomment %}
+{% block content %}
 
-
-<section class="scroll-section relative h-screen flex flex-col md:flex-row">
-        <!-- Détermine l'ordre en fonction de la parité -->
+<section class="relative h-screen flex flex-col md:flex-row">
+    <!-- Colonne de l'image -->
+    <div class="w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden group shine-effect order-1 md:order-1">
+        {% if article.image %}
+            <img src="{{ article.image.url }}" alt="{{ article.titre }}" 
+                 class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" 
+                 loading="lazy">
+        {% else %}
+            <img src="/media/accueil/lbs.PNG" alt="{{ article.titre }}"
+                 class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
+                 loading="lazy">
+        {% endif %}
         
-            <!-- Impair : Média à gauche, texte à droite -->
-            <!-- Média à gauche -->
-            <div class="w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden group shine-effect order-1 md:order-1">
+        <div class="absolute inset-0 bg-gradient-to-r from-neutral-950/70 to-neutral-950/50 md:bg-gradient-to-l md:from-neutral-950/70 md:to-neutral-950/50 transition-opacity duration-500 group-hover:opacity-0"></div>
+    </div>
+    
+    <!-- Colonne du contenu -->
+    <div class="w-full md:w-1/2 h-1/2 md:h-full flex items-center relative justify-center p-8 bg-white order-2 md:order-2 overflow-hidden">
+        <!-- Barre de progression -->
+        <div class="fixed top-0 left-0 right-0 h-1 bg-gray-200 z-10">
+            <div id="readingProgress" class="h-full bg-red-700 transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- Contenu scrollable -->
+        <div id="scrollableDiv" class="w-full h-full overflow-y-auto snap-y snap-mandatory">
+            <div class="max-w-4xl mx-auto p-8">
+            <nav aria-label="Breadcrumb">
+  <ol class="flex items-center gap-1 text-sm text-gray-700">
+    <li>
+      <a href="{% url 'home' %}" class="block transition-colors hover:text-gray-900"> Home </a>
+    </li>
+
+    <li class="rtl:rotate-180">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="size-4"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </li>
+
+    <li>
+      <a href="{% url 'blog' %}" class="block transition-colors hover:text-gray-900"> Articles </a>
+    </li>
+
+    <li class="rtl:rotate-180">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="size-4"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </li>
+
+    <li>
+      <a href="{% url 'article_detail' article.slug %}" class="block transition-colors hover:text-gray-900"> {{ article.titre }}</a>
+    </li>
+  </ol>
+</nav><br>
+                <h1 class="text-4xl font-bold mb-8"> Titre: <span class="text-red-700">{{ article.titre }}</span></h1>
                 
-    
-        <img src="/media/accueil/lbs.PNG" alt="Libérer la Créativité" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" loading="lazy">
-    
-
-<div class="absolute inset-0 bg-gradient-to-r  from-neutral-950/70 to-neutral-950/50 md:bg-gradient-to-l md:from-neutral-950/70 md:to-neutral-950/50 transition-opacity duration-500 group-hover:opacity-0"></div>
-
-            </div>
-            
-            <!-- Texte à droite  add scroller  -->  
-            <div class="w-full md:w-1/2 h-1/2 md:h-full flex items-center snap-y snap-mandatory relative justify-center scroll-section p-8 bg-white order-2 md:order-2 overflow-hidden">
-                <div class="fix ed hidden top-0 left-0 w-full h-2 bg-gray-300 "> 
-</div>
-
-
-<!-- Barre de progression -->
-<div class="fixed top-0 left-0 right-0 h-1 bg-gray-200">
-    <div id="readingProgress" class="h-full bg-red-700" style="width: 0%"></div>
-</div>
-
-
-                <!-- sample article -->
-                <div style="overflow-y: scroll;"  id="scrollableDiv" class="w-full h-full snap-y snap-mandatory">
-                    <div  class="max-w-4xl mx-auto p-8 snap-y snap-mandatory" >
-                        <h1 class="text-4xl font-bold mb-8">A propos de <span class="text-red-700">LIBIS</span></h1>
-                        <div class="flex items-center mb-6">
-                            <div class="h-8 w-8 rounded-full bg-gray-400 mr-4"></div>
-                            <div>
-                                <div class="h-2 w-24 bg-gray-400 mb-1"></div>
-                                <div class="h-2 w-16 bg-gray-400"></div>
-                            </div>
-                        </div>  
-                        <p class="text-lg leading-8 mb-20">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ultricies dui ac suscipit vestibulum.
-                            Pellentesque euismod turpis vel sapien bibendum, non faucibus justo placerat. In hac habitasse platea
-                            dictumst. Morbi id tincidunt elit. Praesent consectetur eleifend mi, vitae gravida ante fringilla quis. Duis
-                            maximus, erat metus interdum eros, in rhoncus leo augue quis quam. Sed rhoncus consequat ipsum, vel egestas
-                            leo congue eu.   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ultricies dui ac suscipit vestibulum.
-                            Pellentesque euismod turpis vel sapien bibendum, non faucibus justo placerat. In hac habitasse platea
-                            dictumst. Morbi id tincidunt elit. Praesent consectetur eleifend mi, vitae gravida ante fringilla quis. Duis
-                            maximus, erat metus interdum eros, in rhoncus leo augue quis quam. Sed rhoncus consequat ipsum, vel egestas
-                            leo congue eu.
-                        </p> 
+                
+                <!-- Auteur et date -->
+                <div class="flex items-center mb-6">
+                    {% if article.auteur.profile.image %}
+                        <img src="{{ article.image.url }}" alt="{{ article.auteur.username }}" 
+                             class="h-8 w-8 rounded-full object-cover mr-4">
+                    {% else %}
+                         <img src="{{ article.image.url }}" alt="{{ article.auteur.username }}" 
+                             class="h-8 w-8 rounded-full object-cover mr-4">
+                    {% endif %}
+                    <div>
+                        <div class="text-sm font-medium text-gray-700">{{ article.auteur.username }}</div>
+                        <div class="text-xs text-gray-500">{{ article.date_publication|date:"d F Y" }}</div>
                     </div>
                 </div>
 
+                
+                
+                <!-- Contenu de l'article -->
+                <article class="prose lg:prose-xl max-w-none text-lg leading-8 mb-20">
+                    {{ article.contenu|safe }}
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
 
-               <script>
-    document.getElementById("scrollableDiv").addEventListener("scroll", function() {
-        var scrollableDiv = this;
-        var scrollTop = scrollableDiv.scrollTop;
-        var scrollHeight = scrollableDiv.scrollHeight;
-        var clientHeight = scrollableDiv.clientHeight;
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollableDiv = document.getElementById("scrollableDiv");
+        const progressBar = document.getElementById("readingProgress");
         
-        var scrollPercent = (scrollTop / (scrollHeight - clientHeight)) * 100;
-        document.querySelector("#readingProgress").style.width = scrollPercent + "%";
+        scrollableDiv.addEventListener("scroll", function() {
+            const scrollTop = scrollableDiv.scrollTop;
+            const scrollHeight = scrollableDiv.scrollHeight;
+            const clientHeight = scrollableDiv.clientHeight;
+            
+            const scrollPercent = (scrollTop / (scrollHeight - clientHeight)) * 100;
+            progressBar.style.width = scrollPercent + "%";
+        });
     });
 </script>
-            </div>
-        
-    </section>
 
-{% endblock %}  
+{% endblock %}

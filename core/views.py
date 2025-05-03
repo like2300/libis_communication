@@ -57,6 +57,20 @@ def article_detail_view(request, slug):
     article = get_object_or_404(Article, slug=slug)
     return render(request, 'libis/article_detail.html', {'article': article})
 
+
+
+# Liste des membres de l’équipe
+def equipe_list_view(request):
+    team_members = TeamMember.objects.all().order_by('nom')
+    return render(request, 'libis/equipe.html', {'team_members': team_members})
+
+# Détail d’un membre de l’équipe
+def equipe_detail_view(request, pk):
+    team_members = get_object_or_404(TeamMember, pk=pk)
+    return render(request, 'libis/equipe_detail.html', {'team_members': team_members})
+
+
+
 # Espace client : tableau de bord
 @login_required
 def client_dashboard_view(request):
