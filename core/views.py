@@ -4,11 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+from django.core.paginator import Paginator
+
 # Accueil
 def home_view(request):
     messages = MessageAccueil.objects.all()[:3] 
     equipe = TeamMember.objects.all()[:5] 
     project = Projet.objects.all()[:5]
+    
     return render(request, 'libis/home.html', {'messages': messages, 'equipe': equipe, 'projects': project})
 
 # À propos
@@ -39,12 +42,21 @@ def service_detail_view(request, pk):
 
 # Liste des projets
 def projet_list_view(request):
-    projets = Projet.objects.all()
-    return render(request, 'libis/portfolio.html', {'projets': projets})
+        # Récupérer tous les projets ou filtrer par catégorie si spécifié
+    projet_list = Projet.objects.all()
+    
+    # # Pagination - 9 projets par page
+    # paginator = Paginator(projet_list, 9)
+    # page_number = request.GET.get('page')
+   
+    
+    return render(request, 'libis/portfolio.html', {
+        'projets': projet_list, 
+    })
 
 # Détail d’un projet
-def projet_detail_view(request, pk):
-    projet = get_object_or_404(Projet, pk=pk)
+def projet_detail_view(request, slug):
+    projet = get_object_or_404(Projet, slug=slug)
     return render(request, 'libis/projet_detail.html', {'projet': projet})
 
 # Liste des articles du blog

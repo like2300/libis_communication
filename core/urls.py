@@ -13,8 +13,8 @@ urlpatterns = [
     path('services/<int:id>/', service_detail_view, name='service_detail'),
 
     # portfolio/urls.py
-    path('portfolio/', projet_list_view, name='portfolio'),
-    path('portfolio/<int:id>/', projet_detail_view, name='projet_detail'),
+    path('portfolio/', projet_list_view, name='portfolio'), 
+    path('portfolio/<slug:slug>/', projet_detail_view, name='projet_detail'),
 
     # equipe/uls.py
     path('equipe/', equipe_list_view, name='equipe'),

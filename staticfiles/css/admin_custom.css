@@ -1,0 +1,45 @@
+/* Couleur de fond principale */
+body, #header {
+    background-color: #111 !important;
+    color: white !important;
+}
+
+/* Sidebar rouge */
+#header, #branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: white !important;
+    background-color: #8B0000 !important;
+}
+
+/* Liens et texte du sidebar */
+.module h2, .module caption, .inline-group h2 {
+    background: #600 !important;
+    color: white !important;
+}
+
+/* Boutons */
+.button, input[type=submit], input[type=button], .submit-row input {
+    background: #8B0000 !important;
+    color: white !important;
+}
+
+/* Tableaux */
+#changelist-filter, .change-list .results {
+    background: #222 !important;
+}
+
+/* Champs de formulaire */
+input, textarea, select, .form-row {
+    background-color: #333 !important;
+    color: white !important;
+    border: 1px solid #444 !important;
+}
+
+/* Aperçus d'images */
+.image-preview img {
+    border: 2px solid #8B0000 !important;
+}
+
+/* Hover sur les lignes */
+.row1:hover, .row2:hover {
+    background-color: #333 !important;
+}
