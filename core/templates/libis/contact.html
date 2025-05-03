@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% comment %} pge about.html {% endcomment %} 
+{% block content %}  
+
+
+<section class="scroll-section relative h-screen flex flex-col md:flex-row">
+        <!-- Détermine l'ordre en fonction de la parité -->
+        
+            <!-- Impair : Média à gauche, texte à droite -->
+            <!-- Média à gauche -->
+            <div class="w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden group shine-effect order-1 md:order-1">
+                
+    
+        <img src="/media/accueil/lbs.PNG" alt="Libérer la Créativité" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" loading="lazy">
+    
+
+<div class="absolute inset-0 bg-gradient-to-r  from-neutral-950/70 to-neutral-950/50 md:bg-gradient-to-l md:from-neutral-950/70 md:to-neutral-950/50 transition-opacity duration-500 group-hover:opacity-0"></div>
+
+            </div>
+            
+            <!-- Texte à droite  add scroller  -->  
+            <div class="w-full md:w-1/2 h-1/2 md:h-full flex items-center snap-y snap-mandatory relative justify-center scroll-section p-8 bg-white order-2 md:order-2 overflow-hidden">
+                <div class="fix ed hidden top-0 left-0 w-full h-2 bg-gray-300 "> 
+</div>
+
+ 
+
+
+
+<section  >
+  <div class="max-w-[556px] px-4 py-10 mx-auto  flex flex-col ">
+    <div class="w-full flex flex-col gap-5">
+      
+      <div class="w-full flex flex-col justify-start items-start gap-6">
+        <div class="w-full">
+          <label class="  text-black text-base font-normal  leading-7">Name*</label><input placeholder="Name" type="text" class="mt-2 w-full px-5 py-2 bg-white rounded-xl outline outline-1 outline-offset-[-1px] outline-black  overflow-hidden  text-[#898989] text-lg font-normal ">
+        </div>
+        <div class="w-full">
+          <label class="  text-black text-base font-normal  leading-7">Email*</label><input placeholder="Email" type="email" class="mt-2 w-full px-5 py-2 bg-white rounded-xl outline outline-1 outline-offset-[-1px] outline-black  overflow-hidden  text-[#898989] text-lg font-normal ">
+        </div>
+        <div class="w-full">
+          <label class="  text-black text-base font-normal  leading-7">Message*</label><textarea class="mt-2 w-full resize-none px-5 py-2 bg-white rounded-xl outline outline-1 outline-offset-[-1px] outline-black  overflow-hidden  text-[#898989] text-lg font-normal " placeholder="Message" cols="40" rows="4"></textarea>
+        </div>
+      </div>
+      <button class=" px-9 py-5 bg-red-600 rounded-2xl     text-white text-xl font-normal  leading-7">Send Message</button>
+    </div>
+  </div>
+</section>
+ 
+            </div>
+        
+    </section>
+
+{% endblock %}  

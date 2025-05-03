@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% comment %} pge about.html {% endcomment %} 
+{% block content %}  
+
+
+<section class="scroll-section relative h-screen flex flex-col md:flex-row">
+        <!-- Détermine l'ordre en fonction de la parité -->
+        
+            <!-- Impair : Média à gauche, texte à droite -->
+            <!-- Média à gauche -->
+            <div class="w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden group shine-effect order-1 md:order-1">
+                
+    
+        <img src="/media/accueil/lbs.PNG" alt="Libérer la Créativité" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" loading="lazy">
+    
+
+<div class="absolute inset-0 bg-gradient-to-r  from-neutral-950/70 to-neutral-950/50 md:bg-gradient-to-l md:from-neutral-950/70 md:to-neutral-950/50 transition-opacity duration-500 group-hover:opacity-0"></div>
+
+            </div>
+            
+            <!-- Texte à droite  add scroller  -->  
+            <div class="w-full md:w-1/2 h-1/2 md:h-full flex items-center snap-y snap-mandatory relative justify-center scroll-section p-8 bg-white order-2 md:order-2 overflow-hidden">
+                <div class="fix ed hidden top-0 left-0 w-full h-2 bg-gray-300 "> 
+</div>
+
+
+<!-- Barre de progression -->
+<div class="fixed top-0 left-0 right-0 h-1 bg-gray-200">
+    <div id="readingProgress" class="h-full bg-red-700" style="width: 0%"></div>
+</div>
+
+
+                <!-- sample article -->
+                <div style="overflow-y: scroll;"  id="scrollableDiv" class="w-full h-full snap-y snap-mandatory">
+                    <div  class="max-w-4xl mx-auto p-8 snap-y snap-mandatory" >
+                        <h1 class="text-4xl font-bold mb-8">A propos de <span class="text-red-700">LIBIS</span></h1>
+                        <div class="flex items-center mb-6">
+                            <div class="h-8 w-8 rounded-full bg-gray-400 mr-4"></div>
+                            <div>
+                                <div class="h-2 w-24 bg-gray-400 mb-1"></div>
+                                <div class="h-2 w-16 bg-gray-400"></div>
+                            </div>
+                        </div>  
+                        <p class="text-lg leading-8 mb-20">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ultricies dui ac suscipit vestibulum.
+                            Pellentesque euismod turpis vel sapien bibendum, non faucibus justo placerat. In hac habitasse platea
+                            dictumst. Morbi id tincidunt elit. Praesent consectetur eleifend mi, vitae gravida ante fringilla quis. Duis
+                            maximus, erat metus interdum eros, in rhoncus leo augue quis quam. Sed rhoncus consequat ipsum, vel egestas
+                            leo congue eu.   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ultricies dui ac suscipit vestibulum.
+                            Pellentesque euismod turpis vel sapien bibendum, non faucibus justo placerat. In hac habitasse platea
+                            dictumst. Morbi id tincidunt elit. Praesent consectetur eleifend mi, vitae gravida ante fringilla quis. Duis
+                            maximus, erat metus interdum eros, in rhoncus leo augue quis quam. Sed rhoncus consequat ipsum, vel egestas
+                            leo congue eu.
+                        </p> 
+                    </div>
+                </div>
+
+
+               <script>
+    document.getElementById("scrollableDiv").addEventListener("scroll", function() {
+        var scrollableDiv = this;
+        var scrollTop = scrollableDiv.scrollTop;
+        var scrollHeight = scrollableDiv.scrollHeight;
+        var clientHeight = scrollableDiv.clientHeight;
+        
+        var scrollPercent = (scrollTop / (scrollHeight - clientHeight)) * 100;
+        document.querySelector("#readingProgress").style.width = scrollPercent + "%";
+    });
+</script>
+            </div>
+        
+    </section>
+
+{% endblock %}  
