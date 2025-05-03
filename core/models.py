@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from django.utils.text import slugify
 
 # Membres de l’équipe
 class TeamMember(models.Model):
@@ -63,6 +65,7 @@ class Projet(models.Model):
         return self.titre
 
 # Articles de blog
+
 class Article(models.Model):
     titre = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
@@ -74,6 +77,22 @@ class Article(models.Model):
 
     def __str__(self):
         return self.titre
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.titre)
+        super().save(*args, **kwargs)
+    
+    @property
+    def is_new(self):
+        """Retourne True si l'article a été publié il y a moins de 7 jours"""
+        return (timezone.now().date() - self.date_publication).days < 7
+    
+    @property
+    def reading_time(self):
+        """Estime le temps de lecture en minutes (180 mots/minute)"""
+        word_count = len(self.contenu.split())
+        return max(1, round(word_count / 180))
 
 # Espace client
 class Client(models.Model):
