@@ -52,7 +52,7 @@ class ContactMessageAdmin(CustomAdminCSS, admin.ModelAdmin):
 
 # Admin des services
 class ServiceAdmin(CustomAdminCSS, admin.ModelAdmin):
-    list_display = ('titre', 'categorie', 'icone', 'ordre')
+    list_display = ('titre', 'categorie', 'image', 'ordre')
     search_fields = ('titre', 'description')
     list_editable = ('ordre',)
     list_filter = ('categorie',)

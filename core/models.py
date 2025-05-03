@@ -91,7 +91,7 @@ class Service(models.Model):
     
     titre = models.CharField(max_length=100)
     description = models.TextField()
-    icone = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='services/images/',null=True,blank=True)
     categorie = models.CharField(max_length=30, choices=CATEGORIES)
     ordre = models.PositiveIntegerField(default=0)
 
