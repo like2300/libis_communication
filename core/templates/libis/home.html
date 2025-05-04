@@ -248,8 +248,15 @@
 
 <div class="  min-h-screen">
     <div class="container mx-auto px-4 py-12">
-        <h1   class="mt-1 text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight text-center mb-5 lg:text-6xl">Découvrez notre création sur ce <span class="text-red-700">Portfolio</span></h1>
+    <div class="flex flex-col items-center justify-center py-12">
+    
+         <h1   class="mt-1 text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight text-center mb-5 lg:text-6xl">Découvrez notre création sur ce <span class="text-red-700">Portfolio</span></h1>
+       
+        <p class=" mt-5 mx-auto text-xl text-center text-gray-500"> Nous vous partageons notre art et expertise dans ce  Portfolio !</p>
         <br>
+        <button class="mt-8 px-6 py-3 bg-red-800 hover:bg-red-600 text-center rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider">
+            Voir tous nos projets
+        </button></div>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             {% for project in projets %}
                 <!-- Détermine la taille de la carte en fonction de la position -->
