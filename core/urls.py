@@ -7,7 +7,6 @@ urlpatterns = [
     path('', home_view, name='home'),
     path('a-propos/', about_view, name='about'),
     path('contact/', contact_view, name='contact'),
-   
 
     # services/urls.py
     path('services/', service_list_view, name='services'),
@@ -16,7 +15,10 @@ urlpatterns = [
     # portfolio/urls.py
     path('portfolio/', projet_list_view, name='portfolio'), 
     path('portfolio/<slug:slug>/', projet_detail_view, name='projet_detail'),
-    
+
+    # equipe/uls.py
+    path('equipe/', equipe_list_view, name='equipe'),
+    path('equipe/<int:pk>/',  equipe_detail_view, name='equipe_detail'),
     # blog/urls.py
     path('blog/', article_list_view, name='blog'),
     path('blog/<slug:slug>/', article_detail_view, name='article_detail'),
