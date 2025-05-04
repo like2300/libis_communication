@@ -51,7 +51,7 @@
                             </svg>
                         </li>
                         <li>
-                            <span class="block text-gray-500">{{ service.titre }}</span>
+                            <span class="block text-gray-500">{{ service.titre|truncatewords:10 }}</span>
                         </li>
                     </ol>
                 </nav>
@@ -94,11 +94,11 @@
                 <div class="border-t pt-6">
                     <h3 class="text-xl font-semibold mb-4">Intéressé par ce service ?</h3>
                     <div class="flex space-x-4">
-                        <a href="{% url 'contact' %}?service={{ service.titre|urlencode }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 transition-colors">
-                            Nous contacter
+                        <a href="{% url 'contact' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 transition-colors">
+                          contacter
                         </a>
                         <a href="{% url 'services' %}" class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
-                            Voir tous les services
+                            Voir plus
                         </a>
                     </div>
                 </div>
