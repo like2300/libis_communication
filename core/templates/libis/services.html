@@ -2,85 +2,67 @@
 {% load static %}
 
 {% block content %}
-<div class="bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto">
-        <!-- En-tête -->
-        <div class="text-center mb-16">
-            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl lg:text-5xl">
-                Pourquoi choisir <span class="text-red-600">LIBIS</span> ?
-            </h2>
-            <p class="mt-4 max-w-3xl mx-auto text-xl text-gray-600">
-                Découvrez notre expertise et notre approche unique pour répondre à vos besoins.
-            </p>
-        </div>
+<div class="relative overflow-hidden   pt-16 pb-32 space-y-24">
+    {% for service in services %}
+    <div class="relative">
+        <div class="lg:mx-auto lg:grid lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-2 lg:gap-24 lg:px-8">
+            <!-- Contenu texte -->
+            <div class="mx-auto max-w-xl px-6 lg:mx-0 lg:max-w-none lg:py-16 lg:px-0 {% cycle '' 'lg:col-start-2' %}">
+                <div>
+                    <!-- Icône -->
+                    <div>
+                        <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-600">
+                            {% if service.icone %}
+                                <i class="{{ service.icone }} text-white text-xl"></i>
+                            {% else %}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" aria-hidden="true"
+                                    class="h-8 w-8 text-white">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18">
+                                    </path>
+                                </svg>
+                            {% endif %}
+                        </span>
+                    </div>
 
-        <!-- Services en alternance -->
-        <div class="space-y-24">
-            {% for service in services %}
-            <div class="flex flex-col {% cycle 'md:flex-row' 'md:flex-row-reverse' %} items-center gap-12">
-                <!-- Image -->
-                <div class="md:w-1/2">
-                    {% if service.image %}
-                    <img src="{{ service.image.url }}" 
-                         alt="{{ service.titre }}" 
-                         class="rounded-lg shadow-xl w-full h-auto object-cover border-2 border-gray-200">
-                    {% else %}
-                    <img src="https://www.svgrepo.com/show/164986/logo.svg" 
-                         alt="Service par défaut" 
-                         class="rounded-lg   w-full h-auto object-cover ">
-                    {% endif %}
-                </div>
-                
-                <!-- Contenu -->
-                <div class="md:w-1/2 {% cycle 'md:pl-12' 'md:pr-12' %}">
-                    <h3 class="text-2xl font-bold text-gray-900 sm:text-3xl">
-                        <span class="text-red-600">{{ forloop.counter|stringformat:"02d" }}.</span> {{ service.titre }}
-                    </h3>
-                    <p class="mt-4 text-lg text-gray-600">
-                        {{ service.description }}
-                    </p>
-                    
-                    <!-- Exemple de caractéristiques -->
+                    <!-- Texte descriptif -->
                     <div class="mt-6">
-                        <div class="flex items-center text-sm text-gray-500">
-                            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                            </svg>
-                            Catégorie : {{ service.get_categorie_display }}
+                        <h2 class="text-3xl font-bold tracking-tight ">
+                            {{ service.titre }}
+                        </h2>
+                        <p class="mt-4 text-lg ">
+                            {{ service.description }}
+                        </p>
+                        <div class="mt-6">
+                            <a href="{% url 'service_detail' service.id %}" class="mt-8 px-6 py-3 bg-red-600 hover:bg-red-400 text-white rounded-full text-lg font-medium transition-all duration-300 hover:tracking-wider">
+                                En savoir plus
+                            </a>
                         </div>
                     </div>
-                    
-                    <!-- Bouton d'action -->
-                    <div class="mt-8">
-                        <a href="{% url 'service_detail' service.id %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 transition-colors">
-                            En savoir plus
-                        </a>
-                    </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="text-center py-12">
-                <p class="text-gray-500">Aucun service disponible pour le moment.</p>
-            </div>
-            {% endfor %}
-        </div>
-        
-        <!-- CTA -->
-        <div class="mt-24 bg-red-600 rounded-xl shadow-lg overflow-hidden">
-            <div class="px-6 py-12 sm:p-16 text-center">
-                <h3 class="text-2xl font-extrabold text-white sm:text-3xl">
-                    Prêt à transformer votre présence en ligne ?
-                </h3>
-                <p class="mt-4 max-w-2xl mx-auto text-lg text-red-100">
-                    Contactez-nous dès aujourd'hui pour discuter de votre projet.
-                </p>
-                <div class="mt-8">
-                    <a href="{% url 'contact' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-red-700 bg-white hover:bg-gray-50 transition-colors">
-                        Nous contacter
-                    </a>
+
+            <!-- Image -->
+            <div class="mt-12 sm:mt-16 lg:mt-0">
+                <div class="{% cycle '-mr-48 pl-6 md:-mr-16' '-ml-48 pr-6 md:-ml-16' %} lg:relative lg:m-0 lg:h-full lg:px-0">
+                    {% if service.image %}
+                        <img src="{{ service.image.url }}" 
+                             alt="{{ service.titre }}" 
+                             class="w-full rounded-xl shadow-2xl ring-1 ring-black ring-opacity-5 lg:absolute {% cycle 'lg:left-0' 'lg:right-0' %} lg:h-full lg:w-auto lg:max-w-none">
+                    {% else %}
+                        <img src="{% static 'images/services/default-service.jpg' %}" 
+                             alt="Service par défaut" 
+                             class="w-full rounded-xl shadow-2xl ring-1 ring-black ring-opacity-5 lg:absolute {% cycle 'lg:left-0' 'lg:right-0' %} lg:h-full lg:w-auto lg:max-w-none">
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
+    {% empty %}
+    <div class="text-center py-12">
+        <p class="text-gray-300">Aucun service disponible pour le moment.</p>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}

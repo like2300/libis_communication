@@ -12,7 +12,7 @@ def home_view(request):
     equipe = TeamMember.objects.all()[:5] 
     project = Projet.objects.all()[:5]
     
-    return render(request, 'libis/home.html', {'messages': messages, 'equipe': equipe, 'projects': project})
+    return render(request, 'libis/home.html', {'messages': messages, 'equipe': equipe, 'projets': project})
 
 # À propos
 def about_view(request):
@@ -77,24 +77,24 @@ def equipe_list_view(request):
     return render(request, 'libis/equipe.html', {'team_members': team_members})
 
 # Détail d’un membre de l’équipe
-def equipe_detail_view(request, pk):
-    team_members = get_object_or_404(TeamMember, pk=pk)
-    return render(request, 'libis/equipe_detail.html', {'team_members': team_members})
 
+def equipe_detail_view(request, pk):
+    team_member = get_object_or_404(TeamMember, pk=pk)
+    return render(request, 'libis/detail_equipe.html', {'team_member': team_member})
 
 
 # Espace client : tableau de bord
 @login_required
 def client_dashboard_view(request):
     client = get_object_or_404(Client, user=request.user)
-    fichiers = FichierPartagé.objects.filter(client=client)
+    fichiers = FichierPartage.objects.filter(client=client)
     return render(request, 'libis/client_dashboard.html', {'client': client, 'fichiers': fichiers})
 
 # Liste des fichiers partagés
 @login_required
 def file_list_view(request):
     client = get_object_or_404(Client, user=request.user)
-    fichiers = FichierPartagé.objects.filter(client=client)
+    fichiers = FichierPartage.objects.filter(client=client)
     return render(request, 'libis/file_list.html', {'fichiers': fichiers})
 
 # Upload de fichier
@@ -104,6 +104,6 @@ def file_upload_view(request):
         titre = request.POST.get('titre')
         fichier = request.FILES.get('fichier')
         client = get_object_or_404(Client, user=request.user)
-        FichierPartagé.objects.create(titre=titre, fichier=fichier, client=client)
+        FichierPartage.objects.create(titre=titre, fichier=fichier, client=client)
         return HttpResponseRedirect(reverse('file_list'))
     return render(request, 'libis/file_upload.html')

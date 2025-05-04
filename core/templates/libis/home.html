@@ -130,7 +130,9 @@
                     <span class="text-neutral-400 tracking-wider text-sm font-mono">0{{ forloop.counter }} / MESSAGE</span>
                     <h2 class="mt-4 text-4xl md:text-6xl font-bold leading-none bg-gradient-to-r from-slate-700 to-red-700 bg-clip-text text-transparent">{{ message.titre }}</h2>
                     <p class="mt-6 text-neutral-700 text-lg leading-relaxed">{{ message.contenu }}</p>
-                    <button class="mt-8 px-6 py-3 bg-red-800 hover:bg-red-600 rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider" onclick="window.location.href='{% url 'article_detail' message.titre|slugify %} '">En savoir plus →</button>
+                    <button
+                     class="mt-8 px-6 py-3 bg-red-800 hover:bg-red-600 rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider"
+                     onclick="window.location.href='{% url 'article_detail' message.titre|slugify %} '">En savoir plus →</button>
                 </div>
             </div>
         {% endif %}
@@ -244,42 +246,77 @@
             </div>
 <br><br><br><br>
 
-<div class="">
-    <div class="container mx-auto px-4 py-8 flex flex-col items-center">
-        <h1 class="mb-1 text-4xl font-extrabold text-gray-900 sm:text-5xl text-center w-2/3 sm:tracking-tight lg:text-6xl">Notre collection de  
-                                <span class="text-red-700">
-                                    projects
-                                </span>realisés
-
-                            </h1> 
-                            <button class="mt-8 px-6 py-3 bg-red-800 hover:bg-red-600 rounded-full text-sm font-medium transition-all duration-150 hover:tracking-wider">En savoir plus →</button>
-                            <br><br>
- 
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-14">
-    {% for project in projects %}
-    <div class="relative overflow-hidden rounded-2xl shadow-lg group {% if forloop.first %}md:col-span-2 md:row-span-2{% else %}h-48{% endif %}">
-        {% if project.image %}
-        <img src="{{ project.image.url }}" alt="{{ project.titre }}" class="w-full h-full object-cover">
-        {% endif %}
-        
-        <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div class="absolute bottom-0 left-0 right-0 p-4">
-                <h3 class="{% if forloop.first %}text-2xl{% else %}text-lg{% endif %} font-bold text-white">{{ project.titre }}</h3>
-                <p class="text-white {% if forloop.first %}text-sm {% endif %} text-[12px]">{{ project.description|truncatechars:100 }}</p>
-                {% if project.lien %}
-                <a href="{{ project.lien }}" class="text-blue-300 hover:text-blue-100 mt-2 inline-block">Voir le projet</a>
+<div class="  min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <h1   class="mt-1 text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight text-center mb-5 lg:text-6xl">Découvrez notre création sur ce <span class="text-red-700">Portfolio</span></h1>
+        <br>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {% for project in projets %}
+                <!-- Détermine la taille de la carte en fonction de la position -->
+                {% if forloop.first %}
+                    <!-- Premier projet - grande carte -->
+                    <div onclick="window.location.href='{% url 'projet_detail' project.slug %}'" class="md:col-span-2 md:row-span-2 relative overflow-hidden rounded-2xl shadow-lg group">
+                        <img  src="{{ project.image.url }}" alt="{{ project.titre }}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div class="absolute bottom-0 left-0 right-0 p-6">
+                                <h3 class="text-2xl font-bold text-white">{{ project.titre }}</h3>
+                                <p class="text-white mt-2">{{ project.categorie }}</p>
+                                <a href="{% url 'projet_detail' project.slug %}" class="mt-4 inline-block px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 transition-colors">
+                                    Voir le projet   
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% elif forloop.counter == 6 %}
+                    <!-- Sixième projet - grande carte -->
+                    <div onclick="window.location.href='{% url 'projet_detail' project.slug %}'" class="md:col-span-2 md:row-span-2 relative overflow-hidden rounded-2xl shadow-lg group">
+                        <img  src="{{ project.image.url }}" alt="{{ project.titre }}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div class="absolute bottom-0 left-0 right-0 p-6">
+                                <h3 class="text-2xl font-bold text-white">{{ project.titre }}</h3>
+                                <p class="text-white mt-2">{{ project.categorie }}</p>
+                                <a href=" " 
+                                class="mt-8 px-6 py-3 bg-red-800 hover:bg-red-600 rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider">
+                                    Voir le projet
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% elif forloop.counter == 10 or forloop.counter == 14 %}
+                    <!-- Cartes larges (2 colonnes) -->
+                    <div onclick="window.location.href='{% url 'projet_detail' project.slug %}'" class="md:col-span-2 relative overflow-hidden rounded-2xl shadow-lg group">
+                        <img src="{{ project.image.url }}" alt="{{ project.titre }}" class="w-full h-auto md:h-64 object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div class="absolute bottom-0 left-0 right-0 p-4">
+                                <h4 class="text-xl font-bold text-white">{{ project.titre }}</h4>
+                                <a href="{% url 'projet_detail' project.slug %}" class="mt-2 inline-block text-sm text-red-300 hover:text-white">
+                                    En savoir plus →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Cartes standard -->
+                    <div onclick="window.location.href='{% url 'projet_detail' project.slug %}'" class="relative overflow-hidden rounded-2xl shadow-lg group">
+                        <img src="{{ project.image.url }}" alt="{{ project.titre }}" class="w-full h-auto object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div class="absolute bottom-0 left-0 right-0 p-4">
+                                <h4 class="text-xl font-bold text-white">{{ project.titre }}</h4>
+                                <a href="{% url 'projet_detail' project.slug %}" class="mt-2 inline-block text-sm text-red-300 hover:text-white">
+                                    En savoir plus →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
-            </div>
+            {% empty %}
+                <div class="col-span-full text-center py-12">
+                    <p class="text-gray-600">Aucun projet à afficher pour le moment.</p>
+                </div>
+            {% endfor %}
         </div>
     </div>
-    {% endfor %}
 </div>
-                    
-
-    </div>
-</div>
-
-
         </section>
 
 

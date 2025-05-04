@@ -10,7 +10,7 @@ urlpatterns = [
 
     # services/urls.py
     path('services/', service_list_view, name='services'),
-    path('services/<int:id>/', service_detail_view, name='service_detail'),
+    path('services/<int:pk>/', service_detail_view, name='service_detail'),
 
     # portfolio/urls.py
     path('portfolio/', projet_list_view, name='portfolio'), 
@@ -18,8 +18,7 @@ urlpatterns = [
 
     # equipe/uls.py
     path('equipe/', equipe_list_view, name='equipe'),
-    path('equipe/<int:id>/', equipe_detail_view, name='equipe_detail'),                                                                                 
-
+    path('equipe/<int:pk>/',  equipe_detail_view, name='equipe_detail'),
     # blog/urls.py
     path('blog/', article_list_view, name='blog'),
     path('blog/<slug:slug>/', article_detail_view, name='article_detail'),
