@@ -3,7 +3,6 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
 from django.core.paginator import Paginator
 
 # Accueil
@@ -17,10 +16,13 @@ def home_view(request):
 # À propos
 def about_view(request):
     equipe = TeamMember.objects.all()
-    return render(request, 'libis/about.html', {'equipe': equipe})
+    informations = Info.objects.all()
+    return render(request, 'libis/about.html', {'equipe': equipe, 'informations': informations})
 
 # Contact
 def contact_view(request):
+    info = Info.objects.all()
+
     if request.method == "POST":
         nom = request.POST.get("nom")
         email = request.POST.get("email")
@@ -28,7 +30,7 @@ def contact_view(request):
         message = request.POST.get("message")
         ContactMessage.objects.create(nom=nom, email=email, sujet=sujet, message=message)
         return redirect('home')
-    return render(request, 'libis/contact.html')
+    return render(request, 'libis/contact.html', {'info': info})
 
 # Liste des services
 def service_list_view(request):

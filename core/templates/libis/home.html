@@ -108,7 +108,7 @@
                     <span class="text-neutral-400 tracking-wider text-sm font-mono">0{{ forloop.counter }} / MESSAGE</span>
                     <h2 class="mt-4 text-4xl md:text-6xl font-bold leading-none bg-gradient-to-r from-white to-red-400 bg-clip-text text-transparent">{{ message.titre }}</h2>
                     <p class="mt-6 text-white/90 text-lg leading-relaxed">{{ message.contenu }}</p>
-                    <button  class="mt-8 px-6 py-3 bg-black/100 hover:bg-black/50 rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider" onclick="window.location.href='{% url 'article_detail' message.titre|slugify %} '">En savoir plus →</button>
+                    <button  class="mt-8 px-6 py-3 bg-black/100 hover:bg-black/50 rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider" onclick="window.location.href='{% url 'services'   %} '">En savoir plus →</button>
                 </div>
             </div>
             
@@ -132,7 +132,7 @@
                     <p class="mt-6 text-neutral-700 text-lg leading-relaxed">{{ message.contenu }}</p>
                     <button
                      class="mt-8 px-6 py-3 bg-red-800 hover:bg-red-600 rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider"
-                     onclick="window.location.href='{% url 'article_detail' message.titre|slugify %} '">En savoir plus →</button>
+                     onclick="window.location.href='{% url 'services'  %} '">En savoir plus →</button>
                 </div>
             </div>
         {% endif %}
@@ -254,8 +254,8 @@
        
         <p class=" mt-5 mx-auto text-xl text-center text-gray-500"> Nous vous partageons notre art et expertise dans ce  Portfolio !</p>
         <br>
-        <button class="mt-8 px-6 py-3 bg-red-800 hover:bg-red-600 text-center rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider">
-            Voir tous nos projets
+        <button onclick="window.location.href='{% url 'portfolio' %}'  " class="mt-8 px-6 py-3 bg-red-800 hover:bg-red-600 text-center rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider">
+            Voir  nos projets
         </button></div>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             {% for project in projets %}

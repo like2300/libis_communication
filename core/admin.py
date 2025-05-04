@@ -124,6 +124,12 @@ class MessageAccueilAdmin(CustomAdminCSS, admin.ModelAdmin):
         return "-"
     media_preview.short_description = 'Média'
 
+class InfoAdmin(admin.ModelAdmin):
+    list_display = ('nom', 'bio', 'photo', 'lien_linkedin', 'lien_twitter', 'lien_github', 'lien_website', 'lien_email', 'lien_telephone', 'lien_facebook', 'lien_instagram', 'lien_youtube', 'lien_tiktok')
+    search_fields = ('nom', 'bio')
+    list_filter = ('lien_linkedin', 'lien_twitter', 'lien_github', 'lien_website', 'lien_email', 'lien_telephone', 'lien_facebook', 'lien_instagram', 'lien_youtube', 'lien_tiktok')
+    
+    
 # Enregistrement des modèles avec les classes admin personnalisées
 admin_site.register(TeamMember, TeamMemberAdmin)
 admin_site.register(ContactMessage, ContactMessageAdmin)
@@ -133,6 +139,7 @@ admin_site.register(Article, ArticleAdmin)
 admin_site.register(Client, ClientAdmin)
 admin_site.register(FichierPartage, FichierPartageAdmin)
 admin_site.register(MessageAccueil, MessageAccueilAdmin)
+admin_site.register(Info, InfoAdmin)
 
 # Remplacez l'admin par défaut
 admin.site = admin_site

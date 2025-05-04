@@ -162,3 +162,21 @@ class FichierPartage(models.Model):
 
     def __str__(self):
         return self.titre
+
+class Info(models.Model):
+    nom = models.CharField(max_length=100)
+    bio = models.TextField()
+    photo = models.ImageField(upload_to='info/')
+    lien_linkedin = models.URLField(blank=True)
+    lien_twitter = models.URLField(blank=True)
+    lien_github = models.URLField(blank=True)
+    lien_website = models.URLField(blank=True)
+    lien_email = models.EmailField(blank=True)
+    lien_telephone = models.CharField(max_length=20, blank=True)
+    lien_facebook = models.URLField(blank=True)
+    lien_instagram = models.URLField(blank=True)
+    lien_youtube = models.URLField(blank=True)
+    lien_tiktok = models.URLField(blank=True)
+
+    def __str__(self):
+        return self.nom
