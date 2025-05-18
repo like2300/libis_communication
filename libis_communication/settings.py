@@ -6,22 +6,13 @@ from pathlib import Path
 import os
 from decouple import config, Csv
 
-from django.templatetags.static import static
-from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
-
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-fallback-key-for-dev-only')
-DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = [
-    'libis-communication.onrender.com',
-    'localhost',  # Pour les tests locaux
-    '127.0.0.1'   # Pour les tests locaux
-]
-
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,libis-communication.onrender.com', cast=Csv())
 
 # Application definition
 INSTALLED_APPS = [
@@ -40,60 +31,6 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'core',
 ]
-
-# Unfold Admin Theme Configuration
-UNFOLD = {
-    "DASHBOARD_CALLBACK": "core.dashboard.index",
-    "SIDEBAR": {
-        "dashboard": "core.dashboard.index",
-        "navigation": "core.navigation.get_navigation",
-    },
-    "SITE_TITLE": "Libis Communication - Administration",
-    "SITE_HEADER": "Libis Communication",
-    "SITE_URL": "/",
-    "STYLES": [
-        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
-    ],
-    "SCRIPTS": [
-        "https://cdn.jsdelivr.net/npm/@unfold/admin@latest/dist/js/unfold.js",
-    ],
-    "SITE_ICON": {
-        "light": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
-        "dark": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
-    },
-    "SITE_LOGO": {
-        "light": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
-        "dark": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
-    },
-    "SITE_SYMBOL": "settings",
-    "COLORS": {
-        "primary": {
-            "50": "254 242 242",
-            "100": "254 226 226",
-            "200": "254 202 202",
-            "300": "252 165 165",
-            "400": "248 113 113",
-            "500": "239 68 68",
-            "600": "220 38 38",
-            "700": "185 28 28",
-            "800": "153 27 27",
-            "900": "127 29 29",
-        },
-    },
-    "DARK_MODE": False,
-    "LOGIN": {
-        "image": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
-        "redirect_after": "/admin/",
-    },
-    "SHOW_HISTORY": True,
-}
-
-
-# Authentication
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = 'edit_client_profile'
-LOGOUT_REDIRECT_URL = 'home'
-AUTH_USER_MODEL = 'core.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -118,7 +55,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages', 
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -164,22 +101,19 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# WhiteNoise configuration
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Configuration CSRF obligatoire pour Render.com
+# Security
 CSRF_TRUSTED_ORIGINS = [
     'https://libis-communication.onrender.com',
-    'https://*.onrender.com'  # Wildcard pour tous les sous-domaines Render
+    'https://*.onrender.com'
 ]
 
 if not DEBUG:
-    # Security settings for production
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -190,34 +124,60 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
 
-# Email configuration
-EMAIL_BACKEND = config('EMAIL_BACKEND', 
-                      default='django.core.mail.backends.console.EmailBackend' if DEBUG 
-                      else 'django.core.mail.backends.smtp.EmailBackend')
+# Email Configuration (SMTP)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='no-reply@libis.com')
+DOMAIN = config('DOMAIN', default='libis-communication.onrender.com')
 
-if not DEBUG:
-    # Production email settings
-    EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-    EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-    EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-    EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-    DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@libis.com')
-    # SSL Configuration - only if using custom certificates
-    EMAIL_SSL_CERTFILE = config('EMAIL_SSL_CERTFILE', default=None)
-    EMAIL_SSL_KEYFILE = config('EMAIL_SSL_KEYFILE', default=None)
-    EMAIL_TIMEOUT = 30  # seconds
+# Authentication
+AUTH_USER_MODEL = 'core.User'
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = 'edit_client_profile'
+LOGOUT_REDIRECT_URL = 'home'
 
-# Custom settings
-SITE_NAME = "Libis Communication"
-# settings.py
-DOMAIN = config('DOMAIN', default='localhost:8000')  # Défini en haut du fichier
-SITE_DOMAIN = config('SITE_DOMAIN', default='localhost:8000')
+# Unfold Admin Theme Configuration
+UNFOLD = {
+    "SITE_TITLE": "Libis Communication - Administration",
+    "SITE_HEADER": "Libis Communication",
+    "SITE_URL": "/",
+    "SITE_ICON": {
+        "light": lambda request: static("img/logo-light.png"),
+        "dark": lambda request: static("img/logo-dark.png"),
+    },
+    "SITE_LOGO": {
+        "light": lambda request: static("img/logo-light.png"),
+        "dark": lambda request: static("img/logo-dark.png"),
+    },
+    "COLORS": {
+        "primary": {
+            "50": "254 242 242",
+            "100": "254 226 226",
+            "200": "254 202 202",
+            "300": "252 165 165",
+            "400": "248 113 113",
+            "500": "239 68 68",
+            "600": "220 38 38",
+            "700": "185 28 28",
+            "800": "153 27 27",
+            "900": "127 29 29",
+        },
+    },
+    "LOGIN": {
+        "image": lambda request: static("img/login-bg.jpg"),
+        "title": "Libis Communication - Connexion Admin",
+        "description": "Espace d'administration réservé au personnel autorisé",
+    },
+}
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Logging configuration
+# Logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -228,6 +188,6 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': 'INFO',
     },
 }
