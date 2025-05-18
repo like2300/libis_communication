@@ -210,7 +210,8 @@ if not DEBUG:
 
 # Custom settings
 SITE_NAME = "Libis Communication"
-DOMAIN = config('SITE_DOMAIN', default='localhost:8000')  # Ajoutez cette ligne
+# settings.py
+DOMAIN = config('DOMAIN', default='localhost:8000')  # Défini en haut du fichier
 SITE_DOMAIN = config('SITE_DOMAIN', default='localhost:8000')
 
 # Default primary key field type
