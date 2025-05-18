@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     'widget_tweaks',
+    'whitenoise.runserver_nostatic',
     'core',
 ]
 
@@ -87,12 +88,6 @@ UNFOLD = {
     "SHOW_HISTORY": True,
 }
 
-UNFOLD["LOGIN"] = {
-    "image": "images/login-bg.jpg",
-    "color": "bg-purple-600",
-    "title": "Libis Communication - Connexion Admin",
-    "description": "Espace d'administration réservé au personnel autorisé",
-}
 
 # Authentication
 LOGIN_URL = '/accounts/login/'
