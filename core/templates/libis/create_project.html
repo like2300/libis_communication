@@ -1,0 +1,158 @@
+{% extends 'baseDash.html' %}
+{% block title %}
+ Téléverser un fichier 
+{% endblock %}
+{% block content %}
+{% load static i18n %}
+{% load widget_tweaks %}
+
+
+<div class="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+  <div class="w-full max-w-4xl">
+    <!-- Card with neumorphism effect -->
+    <div class="bg-gray-100 rounded-2xl p-8 shadow-neumorph">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-red-600 mb-2">{% trans "Upload Project File" %}</h2>
+        <p class="text-gray-600">{% trans "Fill in the details below to upload your project files" %}</p>
+      </div>
+
+      <!-- System messages -->
+      {% if messages %}
+      <div class="mb-6">
+        {% for message in messages %}
+        <div class="p-4 rounded-xl {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} border-l-4 border-{% if message.tags == 'error' %}red{% else %}green{% endif %}-500">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Title -->
+          <div class="md:col-span-2">
+            <label for="{{ form.titre.id_for_label }}" class="block text-sm font-medium text-red-700 mb-2">
+              {{ form.titre.label }}
+            </label>
+            <div class="relative">
+              {{ form.titre|add_class:"w-full pl-10 pr-4 py-3 bg-gray-50 rounded-xl shadow-neumorph-inset focus:shadow-neumorph-inset-focus" }}
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+              </div>
+            </div>
+            {{ form.titre.errors }}
+          </div>
+
+          <!-- File Upload -->
+          <div class="md:col-span-2">
+            <label for="{{ form.fichier.id_for_label }}" class="block text-sm font-medium text-red-700 mb-2">
+              {{ form.fichier.label }}
+            </label>
+            <div class="relative">
+              {{ form.fichier|add_class:"w-full py-2 px-3 bg-gray-50 rounded-xl shadow-neumorph-inset focus:shadow-neumorph-inset-focus" }}
+            </div>
+            {{ form.fichier.errors }}
+          </div>
+
+          <!-- Start Date -->
+          <div>
+            <label for="{{ form.date_debut.id_for_label }}" class="block text-sm font-medium text-red-700 mb-2">
+              {{ form.date_debut.label }}
+            </label>
+            <div class="relative">
+              {{ form.date_debut|add_class:"w-full pl-10 pr-4 py-3 bg-gray-50 rounded-xl shadow-neumorph-inset focus:shadow-neumorph-inset-focus" }}
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+            </div>
+            {{ form.date_debut.errors }}
+          </div>
+
+          <!-- End Date -->
+          <div>
+            <label for="{{ form.date_fin.id_for_label }}" class="block text-sm font-medium text-red-700 mb-2">
+              {{ form.date_fin.label }}
+            </label>
+            <div class="relative">
+              {{ form.date_fin|add_class:"w-full pl-10 pr-4 py-3 bg-gray-50 rounded-xl shadow-neumorph-inset focus:shadow-neumorph-inset-focus" }}
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+            </div>
+            {{ form.date_fin.errors }}
+          </div>
+
+          <!-- Image -->
+          <div>
+            <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-red-700 mb-2">
+              {{ form.image.label }}
+            </label>
+            <div class="relative">
+              {{ form.image|add_class:"w-full py-2 px-3 bg-gray-50 rounded-xl shadow-neumorph-inset focus:shadow-neumorph-inset-focus" }}
+            </div>
+            {{ form.image.errors }}
+          </div>
+
+          <!-- Video -->
+          <div>
+            <label for="{{ form.video.id_for_label }}" class="block text-sm font-medium text-red-700 mb-2">
+              {{ form.video.label }}
+            </label>
+            <div class="relative">
+              {{ form.video|add_class:"w-full py-2 px-3 bg-gray-50 rounded-xl shadow-neumorph-inset focus:shadow-neumorph-inset-focus" }}
+            </div>
+            {{ form.video.errors }}
+          </div>
+
+          <!-- Description -->
+          <div class="md:col-span-2">
+            <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-red-700 mb-2">
+              {{ form.description.label }}
+            </label>
+            <div class="relative">
+              {{ form.description|add_class:"w-full px-4 py-3 bg-gray-50 rounded-xl shadow-neumorph-inset focus:shadow-neumorph-inset-focus min-h-[120px]" }}
+            </div>
+            {{ form.description.errors }}
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-end space-x-4 pt-4">
+          <a href="{% url 'clients' %}" class="px-6 py-3 bg-gray-200 text-red-600 font-medium rounded-xl shadow hover:bg-gray-300 transition">
+            {% trans "Cancel" %}
+          </a>
+          <button type="submit" class="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
+            {% trans "Upload Files" %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .shadow-neumorph {
+    box-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
+  }
+  
+  .shadow-neumorph-inset {
+    box-shadow: inset 3px 3px 6px #d1d9e6, inset -3px -3px 6px #ffffff;
+  }
+  
+  .shadow-neumorph-inset-focus {
+    box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #ffffff;
+  }
+  
+  input, textarea, select {
+    transition: all 0.3s ease;
+  }
+</style>
+{% endblock %}

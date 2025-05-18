@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-info">
+        <h4>Vérification email requise</h4>
+        <p>Nous avons envoyé un email de confirmation à <strong>{{ request.user.email }}</strong>.</p>
+        <p>Veuillez cliquer sur le lien dans cet email pour activer votre compte.</p>
+        <hr>
+        <p>Vous n'avez pas reçu l'email ?</p>
+        <a href="{% url 'resend_verification' %}" class="btn btn-primary">
+            Renvoyer l'email de vérification
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "admin/basee.html" %}
+{% load static i18n %}
+
+{% block content %}
+
+<style>
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+/* Animation des cartes */
+.team-card {
+    transition: all 0.3s ease;
+}
+.team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+</style>
+<div class=" w-full h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8" syle="overflow-y: scroll;">
+    <!-- Header -->
+    <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-800">{% trans "Gestion de l'équipe" %}</h1>
+            <p class="text-gray-500 mt-1">
+                {% blocktrans count count=team.count %}
+                    1 membre d'équipe
+                {% plural %}
+                    {{ count }} membres d'équipe
+                {% endblocktrans %}
+            </p>
+        </div>
+        <a href="{% url 'admin:core_teammember_add' %}" 
+           class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+            <i class="fas fa-plus mr-2"></i> {% trans "Ajouter un membre" %}
+        </a>
+    </div>
+
+    <!-- Team Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for member in team %}
+        <div class="bg-white rounded-lg shadow overflow-hidden transition-all duration-300 hover:shadow-lg">
+            <!-- Member Photo -->
+            <div class="h-48 overflow-hidden">
+                <img src="{{ member.photo.url }}" alt="{{ member.nom }}" 
+                     class="w-full h-full object-cover">
+            </div>
+            
+            <!-- Member Info -->
+            <div class="p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800">{{ member.nom }}</h3>
+                        <p class="text-indigo-600">{{ member.poste }}</p>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="flex space-x-2">
+                        {% if member.lien_linkedin %}
+                        <a href="{{ member.lien_linkedin }}" target="_blank" 
+                           class="text-gray-500 hover:text-blue-700">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        {% endif %}
+                        {% if member.lien_twitter %}
+                        <a href="{{ member.lien_twitter }}" target="_blank" 
+                           class="text-gray-500 hover:text-blue-400">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Bio -->
+                <p class="mt-4 text-gray-600 line-clamp-3">{{ member.bio }}</p>
+                
+                <!-- Skills -->
+                {% if member.competences %}
+                <div class="mt-4">
+                    <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wider">{% trans "Compétences" %}</h4>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        {% for skill in member.competences_list %}
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">
+                            {{ skill }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Actions -->
+                <div class="mt-6 flex justify-end space-x-2">
+                    <a href="{% url 'admin:core_teammember_change' member.id %}" 
+                       class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-md text-sm hover:bg-indigo-100">
+                        <i class="fas fa-edit mr-1"></i> {% trans "Modifier" %}
+                    </a>
+                    <a href="{% url 'admin:core_teammember_delete' member.id %}" 
+                       class="px-3 py-1 bg-red-50 text-red-600 rounded-md text-sm hover:bg-red-100">
+                        <i class="fas fa-trash mr-1"></i> {% trans "Supprimer" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full py-12 text-center">
+            <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-4">
+                <i class="fas fa-users text-3xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900">{% trans "Aucun membre d'équipe" %}</h3>
+            <p class="mt-1 text-gray-500">{% trans "Commencez par ajouter des membres à votre équipe." %}</p>
+            <div class="mt-6">
+                <a href="{% url 'admin:core_teammember_add' %}" 
+                   class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                    <i class="fas fa-plus mr-2"></i> {% trans "Ajouter un membre" %}
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

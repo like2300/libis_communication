@@ -1,0 +1,113 @@
+{% extends "admin/basee.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div class=" w-full h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8" style="overflow-y: scroll;">
+    <!-- Header -->
+    <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">{% trans "Gestion des clients" %}</h1>
+            <p class="text-gray-500 mt-1">
+                {{ page_obj.paginator.count }} {% trans "clients au total" %}
+            </p>
+        </div>
+        <a href="{% url 'admin:core_client_add' %}" 
+           class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+            <i class="fas fa-plus mr-2"></i> {% trans "Ajouter un client" %}
+        </a>
+    </div>
+
+    <!-- Client List -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <!-- Search and Filters -->
+        <div class="px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+             <button onclick="window.location.href='{% url 'search_client' %}'" class="bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 flex items-center space-x-2">
+                <i class="fas fa-search"></i>
+                <span>Rechercher</span>
+            </button>
+        </div>
+        
+        <!-- Clients Table -->
+        <div class="divide-y divide-gray-200">
+            {% for client in page_obj %}
+            <a href="{% url 'admin:core_client_change' client.user_id %}" 
+               class="block px-6 py-4 hover:bg-gray-50 transition-colors">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <!-- Client Info -->
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
+                            {% if client.user.get_full_name %}
+                                {{ client.user.get_full_name|slice:":1" }}
+                            {% else %}
+                                <i class="fas fa-user"></i>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">
+                                {{ client.user.get_full_name|default:client.entreprise }}
+                            </h3>
+                            <p class="text-sm text-gray-500">{{ client.user.email }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Projects Count -->
+                    <div class="flex items-center">
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full mr-4">
+                          {{ client.project_count }} {% trans "projet(s)" %}
+                        </span>
+                        <div class="text-indigo-600">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="px-6 py-8 text-center text-gray-500">
+                <i class="fas fa-inbox text-4xl mb-2"></i>
+                <p>{% trans "Aucun client trouvé" %}</p>
+                <a href="{% url 'admin:core_client_add' %}" class="text-indigo-600 hover:text-indigo-800 mt-2 inline-block">
+                    {% trans "Ajouter votre premier client" %}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.paginator.num_pages > 1 %}
+        <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="text-sm text-gray-500">
+                    {% blocktrans with start=page_obj.start_index end=page_obj.end_index total=page_obj.paginator.count %}
+                        Affichage de {{ start }} à {{ end }} sur {{ total }} clients
+                    {% endblocktrans %}
+                </div>
+                <div class="flex space-x-2">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                       class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <span class="px-3 py-1 bg-indigo-600 text-white rounded-md text-sm">{{ num }}</span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                           class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                       class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

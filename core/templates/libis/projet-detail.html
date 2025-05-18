@@ -1,0 +1,83 @@
+{% extends 'baseDash.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <!-- Project Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">{{ projet.titre }}</h1>
+            <p class="mt-2 text-sm text-gray-600">
+                {{ projet.categorie }} • {{ projet.date|date:"F Y" }}
+            </p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <!-- Project Image -->
+            {% if projet.image %}
+            <div class="px-4 py-5 sm:px-6">
+                <img src="{{ projet.image.url }}" alt="{{ projet.titre }}" class="w-full h-auto rounded-lg">
+            </div>
+            {% else %}
+            <div class="px-4 py-5 sm:px-6">
+                <img src="https://via.placeholder.com/150" alt="{{ projet.titre }}" class="w-full h-auto rounded-lg">
+            </div>
+            {% endif %}
+
+            <!-- Project Details -->
+            <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                <dl class="sm:divide-y sm:divide-gray-200">
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Description</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            {{ projet.description }}
+                        </dd>
+                    </div>
+                    
+                    {% if projet.resultat %}
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Résultats</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            {{ projet.resultat }}
+                        </dd>
+                    </div>
+                    {% endif %}
+                    
+                    {% if projet.lien %}
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Lien</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <a href="{{ projet.lien }}" target="_blank" class="text-[#C62828] hover:underline">
+                                {{ projet.lien }}
+                            </a>
+                        </dd>
+                    </div>
+                    {% endif %}
+                </dl>
+            </div>
+        </div>
+
+        <!-- Related Projects -->
+        {% if related_projects %}
+        <div class="mt-12">
+            <h2 class="text-xl font-bold text-gray-900 mb-6">Projets Similaires</h2>
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {% for related in related_projects %}
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <a href="{% url 'projet_detail' related.slug %}">
+                        {% if related.image %}
+                        <img class="w-full h-48 object-cover" src="{{ related.image.url }}" alt="{{ related.titre }}">
+                        {% endif %}
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-900">{{ related.titre }}</h3>
+                            <p class="mt-1 text-sm text-gray-500">{{ related.categorie }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

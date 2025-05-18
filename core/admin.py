@@ -1,145 +1,223 @@
 from django.contrib import admin
-from django.contrib.admin import AdminSite
+from django.contrib.auth.admin import UserAdmin
 from .models import *
 
-# Personnalisation du thème admin
-class CustomAdminSite(AdminSite):
-    site_header = 'Libis Communication'
-    site_title = 'Libis Communication'
-    index_title = 'Accueil'
-    
-    def each_context(self, request):
-        context = super().each_context(request)
-        # Couleurs personnalisées
-        context['site_header_color'] = 'white'
-        context['site_title_color'] = 'white'
-        context['background_color'] = '#111'
-        context['sidebar_bg'] = '#8B0000'  # Rouge foncé
-        context['sidebar_text'] = 'white'
-        context['sidebar_link'] = 'white'
-        return context
+from django.utils.translation import gettext_lazy as _
 
-# Utilisation du site admin personnalisé
-admin_site = CustomAdminSite(name='custom_admin')
 
-# CSS personnalisé pour l'admin
-class CustomAdminCSS(admin.ModelAdmin):
-    class Media:
-        css = {
-            'all': ('css/admin_custom.css',)
-        }
 
-# Admin de l'équipe
-class TeamMemberAdmin(CustomAdminCSS, admin.ModelAdmin):
-    list_display = ('nom', 'poste', 'photo_preview')
-    search_fields = ('nom', 'poste')
-    list_filter = ('poste',)
-    
-    def photo_preview(self, obj):
-        from django.utils.html import format_html
-        if obj.photo:
-            return format_html('<img src="{}" style="max-height: 50px; max-width: 50px;" />', obj.photo.url)
-        return "-"
-    photo_preview.short_description = 'Photo'
+class CustomUserAdmin(UserAdmin):
+    list_display = ('username', 'email', 'first_name', 'last_name', 
+                    'is_staff', 'is_client', 'email_verified')
+    list_filter = ('is_staff', 'is_superuser', 'is_client', 'email_verified')
+    readonly_fields = ('verification_uuid',)  # <-- Ajout ici
 
-# Admin des messages de contact
-class ContactMessageAdmin(CustomAdminCSS, admin.ModelAdmin):
-    list_display = ('nom', 'email', 'sujet', 'date', 'traite')
-    search_fields = ('nom', 'email', 'sujet')
-    list_filter = ('date', 'traite')
-    list_editable = ('traite',)
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Permissions'), {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 
+                       'is_client', 'email_verified', 'groups', 
+                       'user_permissions'),
+        }),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        (_('Verification'), {'fields': ('verification_uuid',)}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'password1', 'password2'),
+        }),
+    )
+
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ('entreprise',  'email', 'telephone', 'profile_complete',
+                   'secteur_activite', 'date_inscription')
+    list_filter = ('secteur_activite', 'date_inscription')
+    search_fields = ('entreprise', 'user__first_name', 'user__last_name', 
+                    'user__email', 'telephone')
+    raw_id_fields = ('user',)
+    readonly_fields = ('date_inscription',   'email')
+
+    fieldsets = (
+        (_('User Account'), {'fields': ('user',  'email')}),
+        (_('Company Information'), {
+            'fields': ('entreprise', 'secteur_activite', 'telephone', 'adresse')
+        }),
+        (_('Dates'), {'fields': ('date_inscription',)}),
+    )
+
+class ProjetAdmin(admin.ModelAdmin):
+    list_display = ('titre', 'categorie', 'client', 'date', 'en_avant')
+    list_filter = ('categorie', 'en_avant', 'date', 'client')
+    search_fields = ('titre', 'description', 'client__entreprise')
+    prepopulated_fields = {'slug': ('titre',)}
+    filter_horizontal = ('services',)
     date_hierarchy = 'date'
+    readonly_fields = ('created_at', 'updated_at')
 
-# Admin des services
-class ServiceAdmin(CustomAdminCSS, admin.ModelAdmin):
-    list_display = ('titre', 'categorie', 'image', 'ordre')
-    search_fields = ('titre', 'description')
-    list_editable = ('ordre',)
+    fieldsets = (
+        (None, {
+            'fields': ('titre', 'slug', 'description', 'categorie')
+        }),
+        (_('Media'), {
+            'fields': ('image', 'video', 'lien')
+        }),
+        (_('Details'), {
+            'fields': ('date', 'resultat', 'client', 'services', 'en_avant')
+        }),
+        (_('Metadata'), {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ('titre', 'categorie', 'ordre')
     list_filter = ('categorie',)
-
-# Admin des projets
-class ProjetAdmin(CustomAdminCSS, admin.ModelAdmin):
-    list_display = ('titre', 'categorie', 'client', 'date', 'en_avant', 'image_preview')
-    search_fields = ('titre', 'description', 'client')
-    list_filter = ('categorie', 'date', 'en_avant')
-    list_editable = ('en_avant',)
-    date_hierarchy = 'date'
+    search_fields = ('titre', 'description')
     prepopulated_fields = {'slug': ('titre',)}
-    
-    def image_preview(self, obj):
-        from django.utils.html import format_html
-        if obj.image:
-            return format_html('<img src="{}" style="max-height: 50px; max-width: 50px;" />', obj.image.url)
-        return "-"
-    image_preview.short_description = 'Image'
+    readonly_fields = ('created_at', 'updated_at')
 
-# Admin des articles
-class ArticleAdmin(CustomAdminCSS, admin.ModelAdmin):
-    list_display = ('titre', 'auteur', 'date_publication', 'is_new', 'reading_time')
+    fieldsets = (
+        (None, {
+            'fields': ('titre', 'slug', 'description', 'categorie', 'ordre')
+        }),
+        (_('Media'), {
+            'fields': ('image',)
+        }),
+        (_('Metadata'), {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+class TeamMemberAdmin(admin.ModelAdmin):
+    list_display = ('nom', 'poste', 'lien_linkedin')
+    search_fields = ('nom', 'poste', 'bio')
+    readonly_fields = ('competences_list',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('nom', 'poste', 'bio', 'photo')
+        }),
+        (_('Skills'), {
+            'fields': ('competences', 'competences_list')
+        }),
+        (_('Social Links'), {
+            'fields': ('lien_linkedin', 'lien_twitter'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ('titre', 'auteur', 'date_publication', 'en_avant', 'is_new')
+    list_filter = ('en_avant', 'date_publication', 'auteur')
     search_fields = ('titre', 'contenu', 'tags')
-    list_filter = ('date_publication', 'auteur', 'en_avant')
     prepopulated_fields = {'slug': ('titre',)}
+    raw_id_fields = ('auteur',)
     date_hierarchy = 'date_publication'
-    
+    readonly_fields = ('created_at', 'updated_at', 'reading_time', 'date_publication')
+
+    fieldsets = (
+        (None, {
+            'fields': ('titre', 'slug', 'contenu', 'auteur')
+        }),
+        (_('Media'), {
+            'fields': ('image', 'tags')
+        }),
+        (_('Publication'), {
+            'fields': ('date_publication', 'en_avant'),
+            'description': _('Publication date is automatically set when article is first created')
+        }),
+        (_('Metadata'), {
+            'fields': ('reading_time', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
     def is_new(self, obj):
         return obj.is_new
     is_new.boolean = True
-    is_new.short_description = 'Nouveau?'
-    
-    def reading_time(self, obj):
-        return f"{obj.reading_time} min"
-    reading_time.short_description = 'Temps de lecture'
+    is_new.short_description = _('New?')
 
-# Admin des clients
-class ClientAdmin(CustomAdminCSS, admin.ModelAdmin):
-    list_display = ('entreprise', 'user', 'email', 'telephone', 'date_inscription')
-    search_fields = ('entreprise', 'user__username', 'email')
-    list_filter = ('date_inscription',)
 
-# Admin des fichiers partagés
-class FichierPartageAdmin(CustomAdminCSS, admin.ModelAdmin):
-    list_display = ('titre', 'client', 'date_ajout', 'fichier_link')
-    search_fields = ('titre', 'description', 'client__entreprise')
-    date_hierarchy = 'date_ajout'
+# Uncomment and fix the ContactMessageAdmin class
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('nom', 'email', 'sujet', 'is_read', 'traite', 'date', 'status')
+    list_filter = ('is_read', 'traite', 'date')
+    search_fields = ('nom', 'email', 'sujet', 'message')
+    list_editable = ('is_read', 'traite')
+    actions = ['mark_as_read', 'mark_as_processed', 'mark_as_unread']
+    readonly_fields = ('date',)
     
-    def fichier_link(self, obj):
-        from django.utils.html import format_html
-        if obj.fichier:
-            return format_html('<a href="{}" download>Télécharger</a>', obj.fichier.url)
-        return "-"
-    fichier_link.short_description = 'Fichier'
-
-# Admin de la page d'accueil
-class MessageAccueilAdmin(CustomAdminCSS, admin.ModelAdmin):
-    list_display = ('titre', 'actif', 'media_preview')
-    list_editable = ('actif',)
+    fieldsets = (
+        (None, {'fields': ('nom', 'email', 'sujet', 'message')}),
+        ('Status', {
+            'fields': ('is_read', 'traite'),
+            'classes': ('collapse',)
+        }),
+        ('Dates', {
+            'fields': ('date',),
+            'classes': ('collapse',)
+        }),
+    )
     
-    def media_preview(self, obj):
-        from django.utils.html import format_html
-        if obj.media:
-            if obj.media.url.endswith(('.jpg', '.jpeg', '.png', '.gif')):
-                return format_html('<img src="{}" style="max-height: 50px;" />', obj.media.url)
-            else:
-                return format_html('<a href="{}">Fichier média</a>', obj.media.url)
-        return "-"
-    media_preview.short_description = 'Média'
+    def mark_as_read(self, request, queryset):
+        queryset.update(is_read=True)
+    mark_as_read.short_description = _("Mark selected messages as read")
+    
+    def mark_as_unread(self, request, queryset):
+        queryset.update(is_read=False)
+    mark_as_unread.short_description = _("Mark selected messages as unread")
+    
+    def mark_as_processed(self, request, queryset):
+        queryset.update(traite=True)
+    mark_as_processed.short_description = _("Mark selected messages as processed")
+    
+    def status(self, obj):
+        if obj.traite:
+            return _("Processed")
+        return _("Read") if obj.is_read else _("Unread") 
 
 class InfoAdmin(admin.ModelAdmin):
-    list_display = ('nom', 'bio', 'photo', 'lien_linkedin', 'lien_twitter', 'lien_github', 'lien_website', 'lien_email', 'lien_telephone', 'lien_facebook', 'lien_instagram', 'lien_youtube', 'lien_tiktok')
-    search_fields = ('nom', 'bio')
-    list_filter = ('lien_linkedin', 'lien_twitter', 'lien_github', 'lien_website', 'lien_email', 'lien_telephone', 'lien_facebook', 'lien_instagram', 'lien_youtube', 'lien_tiktok')
-    
-    
-# Enregistrement des modèles avec les classes admin personnalisées
-admin_site.register(TeamMember, TeamMemberAdmin)
-admin_site.register(ContactMessage, ContactMessageAdmin)
-admin_site.register(Service, ServiceAdmin)
-admin_site.register(Projet, ProjetAdmin)
-admin_site.register(Article, ArticleAdmin)
-admin_site.register(Client, ClientAdmin)
-admin_site.register(FichierPartage, FichierPartageAdmin)
-admin_site.register(MessageAccueil, MessageAccueilAdmin)
-admin_site.register(Info, InfoAdmin)
+    def has_add_permission(self, request):
+        # Permet seulement un seul enregistrement
+        return not Info.objects.exists()
 
-# Remplacez l'admin par défaut
-admin.site = admin_site
+
+
+class Projets_userAdmin(admin.ModelAdmin):
+    list_display = ('titre', 'client', 'date_ajout', 'date_debut', 'date_fin', )
+    list_filter = ('client', 'date_ajout', 'date_debut')
+    search_fields = ('titre', 'description', 'client__entreprise')
+    readonly_fields = ('date_ajout',)
+    
+
+    fieldsets = (
+        (None, {
+            'fields': ('client', 'titre', 'description')
+        }),
+        ('Files', {
+            'fields': ('fichier', 'image', 'video')
+        }),
+        ('Dates', {
+            'fields': ('date_ajout', 'date_debut', 'date_fin'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+ 
+
+admin.site.register(User, CustomUserAdmin)
+admin.site.register(Client, ClientAdmin)
+admin.site.register(Projet, ProjetAdmin)
+admin.site.register(Service, ServiceAdmin)
+admin.site.register(TeamMember, TeamMemberAdmin)
+admin.site.register(Article, ArticleAdmin) 
+admin.site.register(Info, InfoAdmin)
+admin.site.register(MessageAccueil)
+admin.site.register(Projets_user, Projets_userAdmin)

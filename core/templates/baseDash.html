@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Client - {{ client.entreprise }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Vos styles existants... */
+        
+        .disabled-link {
+            pointer-events: none;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 bg-[#C62828] text-white flex flex-col">
+        <div class="p-4 border-b border-[#e53935] flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#C62828] font-bold">
+                {{ client.user.username|slice:":1"|upper }}
+             </div>
+            <div>
+                <p class="font-medium">{{ client.user.username }}</p>
+                <p class="text-xs opacity-80">Société {{ client.entreprise }} 
+                {% if client.secteur_activite %} / {{ client.secteur_activite }}</p>
+                {% endif %}
+            </div>
+        </div>
+      
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+            {% with active_class="text-white" inactive_class="text-gray-400 hover:text-white" %}
+            <a href="{% if client.profile_complete %}{% url 'clients' %}{% else %}#{% endif %}" 
+               class="sidebar-item flex items-center space-x-3 p-3 rounded-lg {% if not client.profile_complete %}disabled-link{% endif %} {% if request.path == '/client/dashboard/' %}{{ active_class }}{% else %}{{ inactive_class }}{% endif %}">
+                <i class="fas fa-tachometer-alt text-xl"></i>
+                <span>Tableau de bord</span>
+            </a>
+            
+            <a href="{% url 'edit_client_profile' %}" 
+               class="sidebar-item flex items-center space-x-3 p-3 rounded-lg {% if request.path == '/client/edit-profile/' %}{{ active_class }}{% else %}{{ inactive_class }}{% endif %}">
+                <i class="fas fa-user"></i>
+                <span>Mon profil</span>
+                {% if not client.profile_complete %}
+                <span class="ml-auto bg-white text-[#C62828] text-xs px-2 py-1 rounded-full">
+                    <i class="fas fa-exclamation-circle"></i>
+                </span>
+                {% endif %}
+            </a>
+            
+            <a href="{% if client.profile_complete %}{% url 'list_projects' %}{% else %}#{% endif %}" 
+               class="sidebar-item flex items-center space-x-3 p-3 rounded-lg {% if not client.profile_complete %}disabled-link{% endif %} {% if request.path == '/client/files/' %}{{ active_class }}{% else %}{{ inactive_class }}{% endif %}">
+                <i class="fas fa-project-diagram"></i>
+                <span>Mes projets</span>
+                {% if client.profile_complete and client.projets.count > 0 %}
+                <span class="ml-auto bg-white text-[#C62828] text-xs px-2 py-1 rounded-full">
+                    {{ client.projets.count }}
+                </span>
+                {% endif %}
+            </a>
+        </nav>
+        
+        <div class="p-4 border-t border-[#e53935]">
+            <a href="{% url 'logout' %}" class="w-full flex items-center justify-center space-x-2 p-3 rounded-lg hover:bg-white hover:text-[#C62828]">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+        {% endwith %}
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm p-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <button class="text-[#C62828] md:hidden">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2 class="text-xl font-semibold text-gray-800">
+                    {% if not client.profile_complete %}
+                    Complétez votre profil pour continuer
+                    {% else %}
+                    {% block title %}Tableau de bord{% endblock %}
+                    {% endif %}
+                </h2>
+            </div>
+
+            <button onclick="window.location.href='{% if client.profile_complete %}{% url 'create_project' %}{% else %}{% url 'edit_client_profile' %}{% endif %}'"
+                    class="bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 flex items-center space-x-2 {% if not client.profile_complete %}opacity-50 cursor-not-allowed{% endif %}">
+                <i class="fas fa-plus"></i>
+                <span>{% if client.profile_complete %}Nouveau projet{% else %}Compléter profil{% endif %}</span>
+            </button>
+        </header>
+
+        <div style="overflow-y:scroll; height: 100vh;">
+            {% if not client.profile_complete and request.path != '/client/edit-profile/' %}
+            <div class="p-8 text-center">
+                <div class="bg-white rounded-xl p-6 max-w-2xl mx-auto shadow-md">
+                    <i class="fas fa-exclamation-triangle text-5xl text-yellow-500 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Profil incomplet</h3>
+                    <p class="text-gray-600 mb-6">Vous devez compléter votre profil avant d'accéder aux autres fonctionnalités.</p>
+                    <a href="{% url 'edit_client_profile' %}" class="bg-[#C62828] text-white px-6 py-3 rounded-lg hover:bg-[#e53935] transition">
+                        Compléter mon profil
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            {% block content %}
+            {% endblock %}
+            {% endif %}
+        </div>
+        
+        <footer class="bg-white shadow-sm p-4 text-center w-full p-4 flex items-center justify-center">  
+            <p class="text-gray-600">©<script>document.write(new Date().getFullYear())</script> Libis Communication</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Menu mobile
+            const mobileMenuButton = document.querySelector('.md\\:hidden');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if(mobileMenuButton && sidebar) {
+                mobileMenuButton.addEventListener('click', function() {
+                    sidebar.classList.toggle('hidden');
+                    sidebar.classList.toggle('block');
+                });
+            }
+            
+            // Redirection si profil incomplet
+            {% if not client.profile_complete and request.path != '/client/edit-profile/' %}
+            window.location.href = "{% url 'edit_client_profile' %}";
+            {% endif %}
+        });
+    </script>
+</body>
+</html>

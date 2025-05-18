@@ -1,0 +1,257 @@
+{% extends "admin/basee.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Main Content -->
+<div class="flex-1 overflow-auto">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="flex items-center justify-between p-4">
+            <div class="flex items-center">
+                <button id="sidebarToggle" class="md:hidden text-gray-600 mr-4">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <h2 class="text-xl font-semibold text-gray-800">Tableau de bord</h2>
+            </div>
+            <div class="flex items-center space-x-4">
+             
+                <div class="relative">
+                    <button onclick="window.location.href='{% url 'admin_messages' %}'" class="text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-envelope text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{{ pending_messages }}</span>
+                    </button>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-700">{{user}}</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="p-6">
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Clients -->
+            <div class="bg-white rounded-lg shadow p-6 card-hover transition duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Clients</p>
+                        <h3 class="text-2xl font-bold text-gray-800">{{ total_clients }}</h3>
+                        <p class="text-green-500 text-sm mt-1">
+                            <i class="fas fa-arrow-up mr-1"></i> {{ total_clients }} abonnés
+                        </p>
+                    </div>
+                    <div class="bg-indigo-100 p-3 rounded-full">
+                        <i class="fas fa-users text-indigo-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projets actifs -->
+            <div class="bg-white rounded-lg shadow p-6 card-hover transition duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Projets Clients</p>
+                        <h3 class="text-2xl font-bold text-gray-800">{{ active_projects }}</h3>
+                        <p class="text-green-500 text-sm mt-1">
+                            <i class="fas fa-arrow-up mr-1"></i> {{ active_projects }} projets
+                        </p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-project-diagram text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages non traités -->
+            <div class="bg-white rounded-lg shadow p-6 card-hover transition duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Messages</p>
+                        <h3 class="text-2xl font-bold text-gray-800">{{ pending_messages }}</h3>
+                        <p class="text-red-500 text-sm mt-1">
+                            <i class="fas fa-arrow-down mr-1"></i> {{ pending_messages }} en attente
+                        </p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-envelope text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Membres de l'équipe -->
+            <div class="bg-white rounded-lg shadow p-6 card-hover transition duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Collaborateurs</p>
+                        <h3 class="text-2xl font-bold text-gray-800">{{ team_members }}</h3>
+                        <p class="text-gray-500 text-sm mt-1">
+                            <i class="fas fa-minus mr-1"></i> Stable
+                        </p>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <i class="fas fa-user-friends text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions and Recent Activity -->
+        <div class="grid grid-cols-1   lg:grid-cols-3 gap-6 mb-8">
+           
+
+            <!-- Recent Activity -->
+            <div class="lg:col-span-5">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Activités récentes</h3> 
+                    </div>
+                    <div class="space-y-4">
+                        {% for entry in admin_log %}
+                            <div class="activity-item relative pl-8">
+                                <div class="absolute left-0 top-0 h-6 w-6 rounded-full bg-gray-100 flex items-center justify-center">
+                                    <i class="fas fa-edit text-gray-600 text-xs"></i>
+                                </div>
+                                <div class="text-sm">
+                                    <p class="font-medium text-gray-800">{{ entry.get_action_flag_display }}</p>
+                                    <p class="text-gray-500">{{ entry.get_change_message }}</p>
+                                    <p class="text-xs text-gray-400 mt-1">{{ entry.action_time|date:"H:i - d/m/Y" }}</p>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-sm text-gray-500">Aucune activité récente.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Table -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">Projets dans le portfolio</h3>
+                    <a href="{% url 'admin_generate_report' %}?type=clients" class="text-sm text-indigo-600 hover:text-indigo-800">Exporter</a>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de début</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Échéance</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for projet in page_obj %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-globe text-indigo-600"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">{{ projet.titre }}</div>
+                                            <div class="text-sm text-gray-500">{{ projet.type_projet }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ projet.client.entreprise }}</div>
+                                    <div class="text-sm text-gray-500">{{ projet.client.email }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        {% if projet.client.status %}
+                                        {{ projet.client.status }}
+                                        {% else %}
+                                        En attente
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ projet.date_debut|date:"d/m/Y" }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ projet.date_fin|date:"d/m/Y" }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    {% comment %} redirecte dans admin app element  {% endcomment %}
+                                    <a href="{% url 'admin:core_projets_user_change' projet.id %}" class="text-indigo-600 hover:text-indigo-900 mr-3"><i class="fas fa-eye"></i></a>
+                                    <a href="{% url 'admin:core_projets_user_change' projet.id %}" class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></a>
+                                    <a href="{% url 'admin:core_projets_user_delete' projet.id %}" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="bg-gray-50 px-6 py-3 flex items-center justify-between border-t border-gray-200">
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Affichage de <span class="font-medium">{{ page_obj.start_index }}</span> à <span class="font-medium">{{ page_obj.end_index }}</span> sur <span class="font-medium">{{ page_obj.paginator.count }}</span> résultats
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            {% if page_obj.has_previous %}
+                                <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            {% else %}
+                                <span class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-200 bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed">
+                                    <i class="fas fa-chevron-left"></i>
+                                </span>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if num == page_obj.number %}
+                                    <a href="?page={{ num }}" aria-current="page" class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">{{ num }}</a>
+                                {% else %}
+                                    <a href="?page={{ num }}" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">{{ num }}</a>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            {% else %}
+                                <span class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-200 bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed">
+                                    <i class="fas fa-chevron-right"></i>
+                                </span>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Sidebar Toggle
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('hidden');
+    });
+
+    // Card Hover Effect
+    const cards = document.querySelectorAll('.card-hover');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-5px)';
+            card.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+            card.style.boxShadow = '';
+        });
+    });
+</script>
+
+{% endblock %}

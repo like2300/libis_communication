@@ -1,0 +1,40 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
+    <!-- ... autres éléments ... -->
+    
+    <div class="divide-y divide-gray-200">
+        {% for client in page_obj %}
+        <a href="{% url 'admin:core_client_change' client.user_id %}" 
+           class="block px-6 py-4 hover:bg-gray-50 transition-colors">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <!-- ... autres éléments ... -->
+                <div class="flex items-center">
+                    <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full mr-4">
+                        {% with project_count=client.projets.count %}
+                            {% if project_count == 1 %}
+                                {% trans "1 project" %}
+                            {% else %}
+                                {% blocktrans count counter=project_count %}{{ counter }} projects{% endblocktrans %}
+                            {% endif %}
+                        {% endwith %}
+                    </span>
+                    <div class="text-indigo-600">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="px-6 py-8 text-center text-gray-500">
+            <i class="fas fa-inbox text-4xl mb-2"></i>
+            <p>{% trans "No clients found" %}</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- ... reste du template ... -->
+</div>
+{% endblock %}

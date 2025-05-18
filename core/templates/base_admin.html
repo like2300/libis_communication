@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - {% block title %}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s;
+        }
+        .sidebar-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-gray-800 text-white w-64 flex-shrink-0">
+            <div class="p-4 border-b border-gray-700">
+                <h1 class="text-xl font-bold">Admin Dashboard</h1>
+                <p class="text-sm text-gray-400">Bienvenue, {{ request.user.username }}</p>
+            </div>
+            
+            <nav class="p-4">
+                <a href="{% url 'admin_dashboard' %}" 
+                   class="sidebar-link block p-2 rounded mb-1 {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                    <i class="fas fa-tachometer-alt mr-2"></i> Tableau de bord
+                </a>
+                
+                <div class="text-gray-400 uppercase text-xs mt-6 mb-2 px-2">Gestion</div>
+                
+                <a href="{% url 'admin_user_list' %}" 
+                   class="sidebar-link block p-2 rounded mb-1 {% if 'user' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-users mr-2"></i> Utilisateurs
+                </a>
+                
+                <a href="{% url 'admin_client_list' %}" 
+                   class="sidebar-link block p-2 rounded mb-1 {% if 'client' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-building mr-2"></i> Clients
+                </a>
+                
+                <a href="{% url 'admin_projet_list' %}" 
+                   class="sidebar-link block p-2 rounded mb-1 {% if 'projet' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-project-diagram mr-2"></i> Projets
+                </a>
+                
+                <!-- Ajouter d'autres liens ici -->
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-semibold">{% block header %}{% endblock %}</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-external-link-alt"></i> Voir le site
+                    </a>
+                    <a href="{% url 'logout' %}" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </a>
+                </div>
+            </header>
+            
+            <!-- Content -->
+            <main class="p-4">
+                {% include 'partials/messages.html' %}
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        // Scripts pour le dashboard admin
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des menus déroulants
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const menu = this.nextElementSibling;
+                    menu.classList.toggle('hidden');
+                });
+            });
+            
+            // Fermer les menus quand on clique ailleurs
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                        menu.classList.add('hidden');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

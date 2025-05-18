@@ -1,0 +1,124 @@
+{% extends "baseDash.html" %}
+
+{% block content %}
+<!-- Dashboard Content -->
+<main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      
+        <!-- Projects Card -->
+        <div class="bg-white rounded-xl shadow-sm p-6 card-hover transition-all duration-300">
+            <div class="flex items-center justify-between mb-4"> 
+                <h3 class="text-lg font-semibold text-gray-800">Mes Fichiers Projets</h3>
+                <a href="{% url 'list_projects' %}" class="text-sm text-[#C62828] hover:underline">Voir tout</a>
+            </div>
+            
+            <div class="flex items-center justify-between mb-4">
+                {% if client.fichiers.count > 0 %}
+                <span class="bg-[#ffebee] text-[#C62828] px-3 py-1 rounded-full text-sm font-medium">
+                    {{ client.fichiers.count }} fichier(s)
+                </span>
+                {% endif %}
+            </div>
+            
+            {% if client.fichiers.count > 0 %}
+            <div class="space-y-3">
+                {% for fichier in client.fichiers.all|slice:":3" %}
+                <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-file text-[#C62828]"></i>
+                        <span class="text-gray-600">{{ fichier.titre|truncatechars:20 }}</span>
+                    </div>
+                    <span class="text-xs text-gray-500">{{ fichier.date_ajout|date:"d/m/Y" }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 py-4">Aucun fichier projet</p>
+            <a href="{% url 'create_project' %}" class="mt-4 w-full bg-[#C62828] hover:bg-[#e53935] text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center space-x-2">
+                <i class="fas fa-plus"></i>
+                <span>Ajouter un fichier</span>
+            </a>
+            {% endif %}
+        </div>
+        
+        <!-- Quick Profile -->
+        <div class="bg-white rounded-xl shadow-sm p-6 card-hover transition-all duration-300">
+            <div class="flex items-center space-x-4 mb-4">
+                <div class="w-12 h-12 rounded-full bg-[#ffebee] text-[#C62828] flex items-center justify-center font-bold text-xl">
+                    {{ client.entreprise|slice:":1"|upper }}
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-800">{{ client.nom_complet }}</h3>
+                    <p class="text-sm text-gray-600">
+                        {{ client.entreprise }}
+                    </p>
+                </div>
+            </div>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2 text-gray-600">
+                    <i class="fas fa-envelope text-[#C62828]"></i>
+                    <span>{{ client.user.email }}</span>
+                </div>
+                <div class="flex items-center space-x-2 text-gray-600">
+                    <i class="fas fa-phone text-[#C62828]"></i>
+                    <span>{{ client.telephone }}</span>
+                </div>
+                {% if client.adresse %}
+                <div class="flex items-center space-x-2 text-gray-600">
+                    <i class="fas fa-map-marker-alt text-[#C62828]"></i>
+                    <span>{{ client.adresse|truncatechars:30 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <a href="{% url 'edit_client_profile' %}" class="mt-4 w-full border border-[#C62828] text-[#C62828] hover:bg-[#C62828] hover:text-white px-4 py-2 rounded-lg transition-colors inline-block text-center">
+                Modifier le profil
+            </a>
+        </div>
+    </div>
+    
+    <!-- Two columns section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Files -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Fichiers récents</h3>
+                <a href="{% url 'list_projects' %}" class="text-sm text-[#C62828] hover:underline">Voir tout</a>
+            </div>
+            
+            {% if client.fichiers.count > 0 %}
+            <div class="space-y-4">
+                {% for fichier in client.fichiers.all|slice:":3" %}
+                <div class="flex items-start space-x-3 p-3 hover:bg-[#ffebee] rounded-lg transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-[#ffebee] text-[#C62828] flex items-center justify-center">
+                        <i class="fas fa-file"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <p class="font-medium">{{ fichier.titre|truncatechars:20 }}</p>
+                            <span class="text-xs text-gray-500">{{ fichier.date_ajout|date:"d/m/Y" }}</span>
+                        </div>
+                        <p class="text-sm text-gray-600">
+                            {% if fichier.description %}
+                                {{ fichier.description|truncatechars:30 }}
+                            {% else %}
+                                Aucune description
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-4">Aucun fichier récent</p>
+            {% endif %}
+            
+            <a href="{% url 'create_project' %}" class="mt-4 w-full bg-[#C62828] hover:bg-[#e53935] text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center space-x-2">
+                <i class="fas fa-upload"></i>
+                <span>Téléverser un fichier</span>
+            </a>
+        </div>
+
+        
+    </div>
+</main>
+{% endblock %}

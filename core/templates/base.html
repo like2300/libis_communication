@@ -145,6 +145,7 @@
             transform: scaleX(0);
             transform-origin: right;
             transition: transform 0.3s ease-out;
+            
         }
         .nav-link:hover::after {
             transform: scaleX(1);
@@ -182,7 +183,7 @@
 
 {% comment %} load css {% endcomment %}
 
-<div id="close_load" class="absolute top-0 left-0 w-full overflow-hidden h-screen   bg-white  z-[999] flex justify-center items-center">
+<div id="close_load" class="fixed top-0 left-0 w-full h-full overflow-hidden h-screen    bg-white  z-[999] flex justify-center items-center">
     <div class="three-body ">
         <div class="three-body__dot"></div>
         <div class="three-body__dot"></div>
@@ -220,7 +221,7 @@
     </button>
  
 <!-- templates/partials/drawer.html -->
-<div id="drawer-navigation" class="fixed top-0 left-0 z-40 w-full lg:w-[680px] h-screen p-4 overflow-y-auto transition-transform -translate-x-full   backdrop-blur-xl" tabindex="-1" aria-labelledby="drawer-navigation-label">
+<div  style="overflow-y: scroll;" id="drawer-navigation" class="fixed top-0 left-0 z-40 w-full lg:w-[680px] h-full p-4  transition-transform -translate-x-full   backdrop-blur-xl" tabindex="-1" aria-labelledby="drawer-navigation-label">
     <div class="flex justify-between items-center mb-6">
         <h5 id="drawer-navigation-label" class="text-lg font-bold text-red-500 uppercase tracking-wider">Menu</h5>
         <button type="button" data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation" class="text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg p-2 transition-colors">
@@ -235,7 +236,7 @@
         <ul class="space-y-3">
             {% with active_class="  text-white" inactive_class="text-gray-400   hover:text-white" %}
                 <li>
-                    <a href="{% url 'home' %}" class="flex items-center p-3 rounded-lg transition-colors {% if request.path == '/' %}{{ active_class }}{% else %}{{ inactive_class }}{% endif %}">
+                    <a href="{% url 'home' %}" class="    flex items-center p-3 rounded-lg transition-colors {% if request.path == '/' %}{{ active_class }}{% else %}{{ inactive_class }}{% endif %}">
                         <svg class="w-6 h-6 {% if request.path == '/' %}text-red-500{% else %}text-gray-400{% endif %}" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
                         </svg>
@@ -292,27 +293,80 @@
                     </a>
                 </li>
 
-                {% if user.is_authenticated %}
-                <li>
-                    <a href="{% url 'clients' %}" class="flex items-center p-3 rounded-lg transition-colors {% if '/client/' in request.path %}{{ active_class }}{% else %}{{ inactive_class }}{% endif %}">
-                        <svg class="w-6 h-6 {% if '/client/' in request.path %}text-red-500{% else %}text-gray-400{% endif %}" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="ml-4 font-medium">Espace Client</span>
+                {% comment %} cta {% endcomment %}
+
+
+                <div class="bg-red-500 py-12 p-5 rounded-lg">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+          Besoin d'aide ?
+        </h2>
+        <p class="mt-6 text-xl text-white max-w-3xl">
+            Libis Communication vous offre un service de communication efficace et accessible à tous.
+        </p>
+        <div class="mt-10">
+        {% if user.is_authenticated %}
+            {% comment %} profile complete {% endcomment %}
+            {% if user.client.profile_complete and user.client.user == user or user.is_superuser == true %}
+
+                {% if user.is_superuser %}
+                <div class="flex items-start gap-4   w-full">
+                    <a href="{% url 'admin_dashboard' %}"
+                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+                        Commencer {{ user }}
                     </a>
-                </li>
+                    <a href="{% url 'logout' %}"
+                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    </a>
+                </div> 
                 {% else %}
-                <li>
-                    <a href="" class="flex items-center p-3 rounded-lg transition-colors {% if '/accounts/' in request.path %}{{ active_class }}{% else %}{{ inactive_class }}{% endif %}">
-                        <svg class="w-6 h-6 {% if '/accounts/' in request.path %}text-red-500{% else %}text-gray-400{% endif %}" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="ml-4 font-medium">Connexion</span>
+                <div class="flex items-start gap-4   w-full">
+                    <a href="{% url 'clients' %}"
+                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+                        Commencer {{ user }}
                     </a>
-                </li>
+                    <a href="{% url 'logout' %}"
+                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    </a>
+                </div>
                 {% endif %}
-            {% endwith %}
+                
+            {% else %}
+                <div class="flex items-start gap-4  w-full">
+                    <a href="{% url 'edit_client_profile' %}"
+                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+                        Compléter mon profil  ⚠️
+                    </a>
+                    <a href="{% url 'logout' %}"
+                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    </a>
+                </div>
+            {% endif %}
+        
+           
+        {% else %} 
+         <div class="flex items-start gap-4   w-full">
+            <a href="{% url 'login' %}"
+                class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+                Se connecter
+            </a>
+            <a href="{% url 'register' %}"
+                class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+                 S'inscrire
+            </a>
+        </div> 
+
+        {% endif %}
+        </div>
+    </div>
+</div>
         </ul>
+
+        {% endwith %}
+        
     </div>
 </div>
  
@@ -364,5 +418,22 @@
             link.style.animationDelay = `${index * 0.1}s`;
         });
     </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
 </body>
 </html>

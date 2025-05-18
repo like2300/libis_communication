@@ -1,0 +1,222 @@
+{% extends "admin/basee.html" %}
+{% load static i18n %}
+
+{% block content %}
+<div class="min-h-screen w-full bg-gray-50 px-4 py-6 sm:px-6 lg:px-8" style="overflow-y: scroll;">
+    <!-- Header with back button -->
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-800">{% trans "Recherche avancée" %}</h1>
+            <p class="text-gray-500 mt-1">
+                {% if query %}
+                    {% trans "Résultats pour" %} "<span class="font-medium">{{ query }}</span>"
+                {% else %}
+                    {% trans "Entrez un terme de recherche (minimum 3 caractères)" %}
+                {% endif %}
+            </p>
+        </div>
+        <a href="{% url 'admin_dashboard' %}" 
+           class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i> {% trans "Retour" %}
+        </a>
+    </div>
+
+    <!-- Search Form -->
+    <div class="mb-8">
+        <form method="get" action="{% url 'search_client' %}" class="flex">
+            <input type="text" name="q" value="{{ query }}" 
+                   minlength="3"
+                   class="flex-1 min-w-0 block w-full px-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                   placeholder="{% trans 'Rechercher clients, projets, messages...' %}" 
+                   required>
+            <button type="submit" 
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <i class="fas fa-search mr-2"></i> {% trans "Rechercher" %}
+            </button>
+        </form>
+    </div>
+
+    <!-- Search Results -->
+    {% if query and query|length > 2 %}
+        <div class="space-y-8">
+            <!-- Clients Results -->
+            {% if clients %}
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-blue-50">
+                    <h2 class="text-lg font-medium text-blue-800">
+                        <i class="fas fa-users mr-2"></i>
+                        {% trans "Clients" %} ({{ clients|length }})
+                    </h2>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for client in clients %}
+                    <a href="{% url 'admin:core_client_change' client.user.id %}" class="block hover:bg-gray-50">
+                        <div class="px-6 py-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-4">
+                                        {{ client.user.first_name|first|upper }}{{ client.user.last_name|first|upper }}
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">{{ client.user.get_full_name }}</h3>
+                                        <p class="text-sm text-gray-500">{{ client.entreprise }}</p>
+                                        <p class="text-xs text-gray-400 mt-1">{{ client.user.email }}</p>
+                                    </div>
+                                </div>
+                                <div class="text-indigo-600">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Projects Results -->
+            {% if projects %}
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-green-50">
+                    <h2 class="text-lg font-medium text-green-800">
+                        <i class="fas fa-project-diagram mr-2"></i>
+                        {% trans "Projets Portfolio" %} ({{ projects|length }})
+                    </h2>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for project in projects %}
+                    <a href="{% url 'admin:core_projet_change' project.id %}" class="block hover:bg-gray-50">
+                        <div class="px-6 py-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-medium text-gray-800">{{ project.titre }}</h3>
+                                    <p class="text-sm text-gray-500">
+                                        {{ project.client.entreprise|default:"Aucun client" }}
+                                        • {{ project.get_categorie_display }}
+                                    </p>
+                                </div>
+                                <div class="text-indigo-600">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- User Projects Results -->
+            {% if user_projects %}
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-teal-50">
+                    <h2 class="text-lg font-medium text-teal-800">
+                        <i class="fas fa-folder mr-2"></i>
+                        {% trans "Projets Clients" %} ({{ user_projects|length }})
+                    </h2>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for project in user_projects %}
+                    <a href="{% url 'admin:core_projets_user_change' project.id %}" class="block hover:bg-gray-50">
+                        <div class="px-6 py-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-medium text-gray-800">{{ project.titre }}</h3>
+                                    <p class="text-sm text-gray-500">
+                                        {{ project.client.entreprise }}
+                                        • {{ project.date_ajout|date:"d/m/Y" }}
+                                    </p>
+                                </div>
+                                <div class="text-indigo-600">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Messages Results -->
+            {% if messages %}
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-purple-50">
+                    <h2 class="text-lg font-medium text-purple-800">
+                        <i class="fas fa-envelope mr-2"></i>
+                        {% trans "Messages" %} ({{ messages|length }})
+                    </h2>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for message in messages %}
+                    <a href="{% url 'admin:core_contactmessage_change' message.id %}" class="block hover:bg-gray-50 transition-colors">
+                        <div class="px-6 py-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-medium text-gray-800">{{ message.sujet }}</h3>
+                                    <p class="text-sm text-gray-500">
+                                        {{ message.nom }} &lt;{{ message.email }}&gt;
+                                        • <span class="{% if message.is_read %}text-green-600{% else %}text-red-600{% endif %}">
+                                            {{ message.status }}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="text-indigo-600">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Team Results -->
+            {% if team %}
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-yellow-50">
+                    <h2 class="text-lg font-medium text-yellow-800">
+                        <i class="fas fa-user-friends mr-2"></i>
+                        {% trans "Équipe" %} ({{ team|length }})
+                    </h2>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for member in team %}
+                    <a href="{% url 'admin:core_teammember_change' member.id %}" class="block hover:bg-gray-50">
+                        <div class="px-6 py-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 mr-4">
+                                        {{ member.nom|first|upper }}
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">{{ member.nom }}</h3>
+                                        <p class="text-sm text-gray-500">{{ member.poste }}</p>
+                                    </div>
+                                </div>
+                                <div class="text-indigo-600">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- No Results -->
+            {% if not clients and not projects and not user_projects and not messages and not team %}
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-8 text-center text-gray-500">
+                    <i class="fas fa-search text-4xl mb-2"></i>
+                    <p>{% trans "Aucun résultat trouvé pour votre recherche" %}</p>
+                    <p class="mt-2 text-sm">{% trans "Essayez avec d'autres termes ou vérifiez l'orthographe" %}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

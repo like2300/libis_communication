@@ -1,0 +1,74 @@
+{% extends "unfold/admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-lg shadow">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
+                <i class="fas fa-user-friends"></i>
+            </div>
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">{% trans "Total Clients" %}</h3>
+                <p class="text-2xl font-bold text-gray-800">{{ total_clients }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-green-100 text-green-500 mr-4">
+                <i class="fas fa-project-diagram"></i>
+            </div>
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">{% trans "Projets actifs" %}</h3>
+                <p class="text-2xl font-bold text-gray-800">{{ active_projects }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-yellow-100 text-yellow-500 mr-4">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">{% trans "Messages en attente" %}</h3>
+                <p class="text-2xl font-bold text-gray-800">{{ pending_messages }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activités récentes -->
+<div class="bg-white p-6 rounded-lg shadow mb-8">
+    <h2 class="text-xl font-semibold mb-4">{% trans "Activités récentes" %}</h2>
+    <ul class="space-y-4">
+        {% for activity in recent_activities %}
+        <li class="flex items-start">
+            <span class="inline-block w-2 h-2 mt-2 rounded-full bg-indigo-500 mr-3"></span>
+            <p class="text-sm text-gray-600">{{ activity }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Actions rapides -->
+<div class="bg-white p-6 rounded-lg shadow">
+    <h2 class="text-xl font-semibold mb-4">{% trans "Actions rapides" %}</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <a href="{% url 'admin_client_list' %}" class="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+            <i class="fas fa-user-plus mr-2 text-blue-500"></i> {% trans "Ajouter un client" %}
+        </a>
+        <a href="{% url 'admin_create_project' %}" class="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+            <i class="fas fa-plus-circle mr-2 text-green-500"></i> {% trans "Créer un projet" %}
+        </a>
+        <a href="{% url 'admin_send_message' %}" class="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+            <i class="fas fa-envelope mr-2 text-purple-500"></i> {% trans "Envoyer un message" %}
+        </a>
+        <a href="{% url 'admin_settings' %}" class="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+            <i class="fas fa-file-export mr-2 text-red-500"></i> {% trans "Générer un rapport" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

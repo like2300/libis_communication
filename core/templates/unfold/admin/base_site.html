@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr" class="bg-base-100 text-base-content">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Mon Dashboard{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Tailwind CSS + DaisyUI CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui @latest/dist/full.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss @3.4.1/dist/tailwind.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="min-h-screen">
+
+    <!-- Sidebar -->
+    <div class="drawer drawer-mobile">
+        <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+        <div class="drawer-content flex flex-col">
+            <!-- Header / Navbar -->
+            <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">☰ Menu</label>
+
+            <header class="bg-base-200 p-4 shadow-md">
+                <h1 class="text-2xl font-bold">{% block page_title %}Dashboard{% endblock %}</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="p-6">
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+
+        <!-- Sidebar Navigation -->
+        <div class="drawer-side">
+            <label for="my-drawer-2" class="drawer-overlay"></label>
+            <ul class="menu p-4 w-80 bg-base-200 text-base-content space-y-2">
+                <li><a href="{% url 'admin_dashboard' %}" class="active:bg-primary active:text-white">Tableau de bord</a></li>
+                <li><a href="{% url 'liste_clients' %}">Clients</a></li>
+                <li><a href="{% url 'admin_client_projects' %}">Projets Clients</a></li>
+                <li><a href="{% url 'admin_team_member_list' %}">Équipe</a></li>
+                <li><a href="{% url 'admin_messages' %}">Messages</a></li>
+                <li><a href="{% url 'article_list' %}">Articles</a></li>
+                <li><a href="{% url 'admin_settings' %}">Paramètres</a></li>
+                <li><a href="{% url 'logout' %}">Déconnexion</a></li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

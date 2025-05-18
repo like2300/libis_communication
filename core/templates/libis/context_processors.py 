@@ -1,0 +1,6 @@
+# libis/context_processors.py
+def user_context(request):
+    return {
+        'user': request.user,
+        'is_authenticated': request.user.is_authenticated,
+    }

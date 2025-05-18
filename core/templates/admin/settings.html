@@ -1,0 +1,195 @@
+{% extends "admin/basee.html" %}
+{% load static i18n %}
+
+{% block content %}
+<div class=" w-full h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8" style="overflow-y: scroll;">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-2xl font-semibold text-gray-800">{% trans "Paramètres du site" %}</h1>
+        <p class="text-gray-500 mt-1">{% trans "Gérez les informations de base de votre site" %}</p>
+    </div>
+
+    <!-- Settings Form -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <form method="post" enctype="multipart/form-data" class="p-6">
+            {% csrf_token %}
+            
+            <div class="space-y-6">
+                <!-- Section 1: Informations de base -->
+                <div>
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% trans "Informations de base" %}</h2>
+                    
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <!-- Nom -->
+                        <div>
+                            <label for="nom" class="block text-sm font-medium text-gray-700">
+                                {% trans "Nom de l'entreprise" %} *
+                            </label>
+                            <input type="text" name="nom" id="nom" required
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                   value="{{ info.nom|default:'' }}">
+                        </div>
+                        
+                        <!-- Logo -->
+                        <div>
+                            <label for="photo" class="block text-sm font-medium text-gray-700">
+                                {% trans "Logo" %}
+                            </label>
+                            <div class="mt-1 flex items-center">
+                                <div class="h-16 w-16 rounded-full overflow-hidden bg-gray-100">
+                                    {% if info.photo %}
+                                        <img src="{{ info.photo.url }}" alt="Logo" class="h-full w-full object-cover">
+                                    {% else %}
+                                        <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
+                                    {% endif %}
+                                </div>
+                                <input type="file" name="photo" id="photo" 
+                                       class="ml-5 block text-sm text-gray-600">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bio -->
+                    <div class="mt-6">
+                        <label for="bio" class="block text-sm font-medium text-gray-700">
+                            {% trans "Description de l'entreprise" %}
+                        </label>
+                        <textarea name="bio" id="bio" rows="4"
+                                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">{{ info.bio|default:'' }}</textarea>
+                    </div>
+                </div>
+                
+                <!-- Section 2: Coordonnées -->
+                <div class="pt-6 border-t border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% trans "Coordonnées" %}</h2>
+                    
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <!-- Email -->
+                        <div>
+                            <label for="lien_email" class="block text-sm font-medium text-gray-700">
+                                {% trans "Email" %} *
+                            </label>
+                            <input type="email" name="lien_email" id="lien_email" required
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                   value="{{ info.lien_email|default:'' }}">
+                        </div>
+                        
+                        <!-- Téléphone -->
+                        <div>
+                            <label for="lien_telephone" class="block text-sm font-medium text-gray-700">
+                                {% trans "Téléphone" %}
+                            </label>
+                            <input type="tel" name="lien_telephone" id="lien_telephone"
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                   value="{{ info.lien_telephone|default:'' }}">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section 3: Réseaux sociaux -->
+                <div class="pt-6 border-t border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% trans "Réseaux sociaux" %}</h2>
+                    
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <!-- LinkedIn -->
+                        <div>
+                            <label for="lien_linkedin" class="block text-sm font-medium text-gray-700">
+                                LinkedIn
+                            </label>
+                            <div class="mt-1 flex rounded-md shadow-sm">
+                                <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                                    https://linkedin.com/
+                                </span>
+                                <input type="text" name="lien_linkedin" id="lien_linkedin"
+                                       class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300"
+                                       placeholder="votreprofil"
+                                       value="{{ info.lien_linkedin|default:''|cut:'https://linkedin.com/' }}">
+                            </div>
+                        </div>
+                        
+                        <!-- Twitter -->
+                        <div>
+                            <label for="lien_twitter" class="block text-sm font-medium text-gray-700">
+                                Twitter
+                            </label>
+                            <div class="mt-1 flex rounded-md shadow-sm">
+                                <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                                    https://twitter.com/
+                                </span>
+                                <input type="text" name="lien_twitter" id="lien_twitter"
+                                       class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300"
+                                       placeholder="votrecompte"
+                                       value="{{ info.lien_twitter|default:''|cut:'https://twitter.com/' }}">
+                            </div>
+                        </div>
+                        
+                        <!-- Facebook -->
+                        <div>
+                            <label for="lien_facebook" class="block text-sm font-medium text-gray-700">
+                                Facebook
+                            </label>
+                            <div class="mt-1 flex rounded-md shadow-sm">
+                                <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                                    https://facebook.com/
+                                </span>
+                                <input type="text" name="lien_facebook" id="lien_facebook"
+                                       class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300"
+                                       placeholder="votrepage"
+                                       value="{{ info.lien_facebook|default:''|cut:'https://facebook.com/' }}">
+                            </div>
+                        </div>
+                        
+                        <!-- Instagram -->
+                        <div>
+                            <label for="lien_instagram" class="block text-sm font-medium text-gray-700">
+                                Instagram
+                            </label>
+                            <div class="mt-1 flex rounded-md shadow-sm">
+                                <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                                    https://instagram.com/
+                                </span>
+                                <input type="text" name="lien_instagram" id="lien_instagram"
+                                       class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300"
+                                       placeholder="votrecompte"
+                                       value="{{ info.lien_instagram|default:''|cut:'https://instagram.com/' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Actions -->
+            <div class="mt-8 pt-5 border-t border-gray-200">
+                <div class="flex justify-end">
+                    <button type="submit" 
+                            class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        {% trans "Enregistrer les modifications" %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Pré-remplir les URLs complètes pour les réseaux sociaux
+    const socialFields = ['linkedin', 'twitter', 'facebook', 'instagram'];
+    
+    socialFields.forEach(field => {
+        const input = document.getElementById(`lien_${field}`);
+        if (input) {
+            input.addEventListener('blur', function() {
+                if (this.value && !this.value.startsWith('http')) {
+                    this.value = `https://${field}.com/${this.value.replace(/^\/+/g, '')}`;
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

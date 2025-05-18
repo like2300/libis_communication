@@ -1,0 +1,220 @@
+{% extends "admin/basee.html" %}
+{% load i18n static %}
+
+
+{% block extrahead %}
+<!-- Tailwind CSS via CDN -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+    .hover-bg-gray-50:hover {
+        background-color: #f9fafb;
+    }
+    .project-badge {
+        font-size: 0.75rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 px-6 py-8">
+    <!-- Header -->
+    <div class="mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-800">{{ page_title }}</h1>
+            <p class="text-gray-500 mt-1">
+                {% blocktrans count count=active_projects_count %}
+                    1 projet actif
+                {% plural %}
+                    {{ count }} projets actifs
+                {% endblocktrans %}
+                • 
+                {% blocktrans count count=portfolio_projects_count %}
+                    1 projet portfolio
+                {% plural %}
+                    {{ count }} projets portfolio
+                {% endblocktrans %}
+            </p>
+        </div>
+        {% if can_add_project %}
+        <a href="{% url 'admin:core_projets_user_add' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            <i class="fas fa-plus mr-2"></i> {% trans "Ajouter un projet" %}
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Clients Card -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="mr-4 p-3 rounded-full bg-blue-50 text-blue-600">
+                    <i class="fas fa-users text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">{% trans "Clients" %}</h3>
+                    <p class="text-3xl font-semibold text-gray-800">{{ page_obj.paginator.count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Projects Card -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="mr-4 p-3 rounded-full bg-green-50 text-green-600">
+                    <i class="fas fa-project-diagram text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">{% trans "Projets Actifs" %}</h3>
+                    <p class="text-3xl font-semibold text-gray-800">{{ active_projects_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portfolio Projects Card -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="mr-4 p-3 rounded-full bg-purple-50 text-purple-600">
+                    <i class="fas fa-images text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">{% trans "Portfolio" %}</h3>
+                    <p class="text-3xl font-semibold text-gray-800">{{ portfolio_projects_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clients List -->
+    <div class="bg-white shadow rounded-lg overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-gray-800">{% trans "Clients et leurs projets" %}</h2>
+             
+            <button onclick="window.location.href='{% url 'search_client' %}'" class="bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 flex items-center space-x-2">
+                <i class="fas fa-search"></i>
+                <span>Rechercher</span>
+            </button>
+            
+        </div>
+        
+        <div class="divide-y divide-gray-200">
+            {% for client in page_obj %}
+            <div class="px-6 py-4 hover-bg-gray-50 transition-colors duration-150">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-4">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">{{ client.entreprise }}</h3>
+                            <p class="text-sm text-gray-500">{{ client.user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full mr-4">
+                            {% blocktrans count count=client.projets_user_count %}
+                                1 projet
+                            {% plural %}
+                                {{ count }} projets
+                            {% endblocktrans %}
+                        </span>
+                        <a href="{% url 'admin:core_client_change' client.user_id %}" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="px-6 py-8 text-center text-gray-500">
+                <i class="fas fa-inbox text-4xl mb-2"></i>
+                <p>{% trans "Aucun client trouvé" %}</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if page_obj.paginator.num_pages > 1 %}
+        <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
+            <div class="flex justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    {% blocktrans with start=page_obj.start_index end=page_obj.end_index total=page_obj.paginator.count %}
+                        Affichage de {{ start }} à {{ end }} sur {{ total }} clients
+                    {% endblocktrans %}
+                </div>
+                <div class="flex space-x-2">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 border rounded-md text-sm">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <span class="px-3 py-1 bg-blue-600 text-white rounded-md text-sm">{{ num }}</span>
+                        {% else %}
+                        <a href="?page={{ num }}" class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 border rounded-md text-sm">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Active Projects Section -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800">{% trans "Projets Actifs Récents" %}</h2>
+        </div>
+        
+        <div class="divide-y divide-gray-200">
+            {% for project in active_projects|slice:":5" %}
+            <div class="px-6 py-4 hover-bg-gray-50 transition-colors duration-150">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-4">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">{{ project.titre }}</h3>
+                            <p class="text-sm text-gray-500">{{ project.client.entreprise }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full mr-4 project-badge">
+                            {% if project.date_fin %}
+                                {% trans "Termine le" %} {{ project.date_fin|date:"d/m/Y" }}
+                            {% else %}
+                                {% trans "En cours" %}
+                            {% endif %}
+                        </span>
+                        <a href="{% url 'admin:core_projets_user_change' project.id %}" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="px-6 py-8 text-center text-gray-500">
+                <i class="fas fa-inbox text-4xl mb-2"></i>
+                <p>{% trans "Aucun projet actif trouvé" %}</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if active_projects.count > 5 %}
+        <div class="px-6 py-3 bg-gray-50 border-t border-gray-200 text-right">
+            <a href="{% url 'admin:core_projets_user_changelist' %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                {% trans "Voir tous les projets" %} <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
