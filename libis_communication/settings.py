@@ -208,21 +208,17 @@ if not DEBUG:
 
 
 # Email configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT =  '587'
-EMAIL_USE_TLS =  True
-EMAIL_HOST_USER = 'elengaomerfils@gmail.com'
-EMAIL_HOST_PASSWORD =  'uyyhwvvtqbfjjwvl'
-DEFAULT_FROM_EMAIL =  'elengaomerfils@gmail.com'
-EMAIL_TIMEOUT =  30
-
-# Custom settings
-SITE_NAME = "Libis Communication"
-DOMAIN =  'libis-communication.onrender.com'
-SITE_DOMAIN =  'libis-communication.onrender.com'
-
-# Default primary key field type
+# Email configuration
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@libis.com')
+DOMAIN = config('DOMAIN', default='localhost:8000')
+SITE_DOMAIN = config('SITE_DOMAIN', default=DOMAIN)
+EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=30, cast=int)
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
