@@ -208,7 +208,7 @@ if not DEBUG:
     EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
     EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
     DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@libis.com')
-    DOMAIN = config('DOMAIN', default='localhost:8000')
+    DOMAIN = 'libis-communication.onrender.com'
     
     # SSL Configuration - only if using custom certificates
     EMAIL_SSL_CERTFILE = config('EMAIL_SSL_CERTFILE', default=None)
