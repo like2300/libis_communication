@@ -10,16 +10,6 @@ from django.templatetags.static import static
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
-
-# Désactive la vérification SSL (pour développement seulement)
-# Solution temporaire pour développement (à retirer en production)
-import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
-
-# Solution permanente pour production
-EMAIL_SSL_CERTFILE = None
-EMAIL_SSL_KEYFILE = None
- 
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,10 +20,10 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost', cast=Csv(
 
 # Application definition
 INSTALLED_APPS = [
-    "unfold",  # <- Doit être en première position
-    "unfold.contrib.filters",  # optional
-    "unfold.contrib.forms",    # optional
-    "unfold.contrib.inlines",  # optional
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -42,46 +32,34 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     'widget_tweaks',
-    'core',  # Votre application principale
+    'core',
 ]
+
 # Unfold Admin Theme Configuration
 UNFOLD = {
-
-
- 
-
-"DASHBOARD_CALLBACK": "core.dashboard.index",
+    "DASHBOARD_CALLBACK": "core.dashboard.index",
     "SIDEBAR": {
-            "dashboard": "core.dashboard.index",  # ✅ Remplacé par votre app
-            "navigation": "core.navigation.get_navigation",  # ✅ Remplacé par votre app
-        },
-
-
-
-
-
+        "dashboard": "core.dashboard.index",
+        "navigation": "core.navigation.get_navigation",
+    },
     "SITE_TITLE": "Libis Communication - Administration",
     "SITE_HEADER": "Libis Communication",
     "SITE_URL": "/",
-     "STYLES": [
+    "STYLES": [
         "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
     ],
     "SCRIPTS": [
         "https://cdn.jsdelivr.net/npm/@unfold/admin@latest/dist/js/unfold.js",
     ],
     "SITE_ICON": {
-        "light": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",  # Chemin relatif à static
+        "light": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
         "dark": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
     },
-
     "SITE_LOGO": {
-        "light": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",  # Logo plus grand pour la page de login
+        "light": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
         "dark": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
     },
-
-     
-    
-    "SITE_SYMBOL": "settings",  # Symbole Material Icons pour le menu
+    "SITE_SYMBOL": "settings",
     "COLORS": {
         "primary": {
             "50": "254 242 242",
@@ -89,45 +67,34 @@ UNFOLD = {
             "200": "254 202 202",
             "300": "252 165 165",
             "400": "248 113 113",
-            "500": "239 68 68",  # red-500 (plus visible que red-600)
-            "600": "220 38 38",  # red-600 (couleur que vous demandez)
+            "500": "239 68 68",
+            "600": "220 38 38",
             "700": "185 28 28",
             "800": "153 27 27",
             "900": "127 29 29",
         },
     },
-    "DARK_MODE": False,  # Mode sombre
+    "DARK_MODE": False,
     "LOGIN": {
-        "image": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",  # Image de fond pour la page de login
-        "redirect_after": "/admin/",  # Redirection après connexion
+        "image": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
+        "redirect_after": "/admin/",
     },
- 
-    
-     "SHOW_HISTORY": True, 
-      
+    "SHOW_HISTORY": True,
 }
-
-
- 
-
 
 UNFOLD["LOGIN"] = {
     "image": "images/login-bg.jpg",
-    "color": "bg-purple-600",  # Couleur d'accent
+    "color": "bg-purple-600",
     "title": "Libis Communication - Connexion Admin",
     "description": "Espace d'administration réservé au personnel autorisé",
 }
 
+# Authentication
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = 'edit_client_profile'
+LOGOUT_REDIRECT_URL = 'home'
+AUTH_USER_MODEL = 'core.User'
 
-
- 
-# Add login/logout URLs (you have them but let's make them more visible)
-# Paramètres d'authentification
-LOGIN_URL = '/accounts/login/'  # URL de la page de connexion
-LOGIN_REDIRECT_URL = 'edit_client_profile'  # Nom de l'URL de redirection après connexion
-LOGOUT_REDIRECT_URL = 'home'  # Page après déconnexion
-AUTH_USER_MODEL = 'core.User'  # Modèle utilisateur personnalisé
-# URL de la page de connexion
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -156,7 +123,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 WSGI_APPLICATION = 'libis_communication.wsgi.application'
 
@@ -194,7 +160,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
@@ -214,7 +180,7 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     SECURE_BROWSER_XSS_FILTER = True
@@ -222,27 +188,28 @@ if not DEBUG:
     X_FRAME_OPTIONS = 'DENY'
 
 # Email configuration
+EMAIL_BACKEND = config('EMAIL_BACKEND', 
+                      default='django.core.mail.backends.console.EmailBackend' if DEBUG 
+                      else 'django.core.mail.backends.smtp.EmailBackend')
 
-# Configuration Email
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True  # TLS est obligatoire pour Gmail
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='votre@gmail.com')
-EMAIL_HOST_PASSWORD='uyyhwvvtqbfjjwvl'
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='votre@gmail.com')  # Doit correspondre à EMAIL_HOST_USER
-DOMAIN=config('DOMAIN', default='localhost:8000')
-# Custom User Model
-AUTH_USER_MODEL = 'core.User'
+if not DEBUG:
+    # Production email settings
+    EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+    EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+    EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+    DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@libis.com')
+    DOMAIN = config('DOMAIN', default='localhost:8000')
+    
+    # SSL Configuration - only if using custom certificates
+    EMAIL_SSL_CERTFILE = config('EMAIL_SSL_CERTFILE', default=None)
+    EMAIL_SSL_KEYFILE = config('EMAIL_SSL_KEYFILE', default=None)
+    EMAIL_TIMEOUT = 30  # seconds
+
 # Custom settings
 SITE_NAME = "Libis Communication"
 SITE_DOMAIN = config('SITE_DOMAIN', default='localhost:8000')
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
-# Custom user model
-AUTH_USER_MODEL = 'core.User'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
