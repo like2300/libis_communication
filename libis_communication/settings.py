@@ -172,8 +172,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Security settings
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://127.0.0.1', cast=Csv())
+# settings.py
+CSRF_TRUSTED_ORIGINS = ['https://*', 'http://*']  # Autorise toutes les origines
 
 if not DEBUG:
     # Security settings for production
