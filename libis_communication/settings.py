@@ -11,6 +11,14 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 
+# Désactive la vérification SSL (pour développement seulement)
+# Solution temporaire pour développement (à retirer en production)
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
+# Solution permanente pour production
+EMAIL_SSL_CERTFILE = None
+EMAIL_SSL_KEYFILE = None
  
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -215,16 +223,15 @@ if not DEBUG:
 
 # Email configuration
 
- 
-EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend' 
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_PORT=587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@libis.com')
-DOMAIN = config('DOMAIN', default='localhost:8000')
-
+# Configuration Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  # TLS est obligatoire pour Gmail
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='votre@gmail.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='votre-mot-de-passe-app')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='votre@gmail.com')  # Doit correspondre à EMAIL_HOST_USER
+DOMAIN=config('DOMAIN', default='localhost:8000')
 # Custom User Model
 AUTH_USER_MODEL = 'core.User'
 # Custom settings
