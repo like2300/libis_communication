@@ -483,7 +483,7 @@ def about_view(request):
     """About page with team information"""
     context = {
         'equipe': TeamMember.objects.all().order_by('?'),  # Random order
-        'informations': Info.objects.first(),
+        'informations': Info.objects.all(),
     }
     return render(request, 'libis/about.html', context)
 
