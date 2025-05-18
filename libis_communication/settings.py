@@ -229,7 +229,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True  # TLS est obligatoire pour Gmail
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='votre@gmail.com')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='votre-mot-de-passe-app')
+EMAIL_HOST_PASSWORD='uyyhwvvtqbfjjwvl'
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='votre@gmail.com')  # Doit correspondre à EMAIL_HOST_USER
 DOMAIN=config('DOMAIN', default='localhost:8000')
 # Custom User Model
