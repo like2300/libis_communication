@@ -18,10 +18,9 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-fallback-key-for-dev-
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = [
     'libis-communication.onrender.com',
-    'localhost',  # Pour les tests locaux
-    '127.0.0.1'   # Pour les tests locaux
+    'localhost',
+    '127.0.0.1'
 ]
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -52,18 +51,18 @@ UNFOLD = {
     "SITE_HEADER": "Libis Communication",
     "SITE_URL": "/",
     "STYLES": [
-        "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+        "https://fonts.googleapis.com/css2?family=Inter :wght@300;400;500;600;700&display=swap",
     ],
     "SCRIPTS": [
-        "https://cdn.jsdelivr.net/npm/@unfold/admin@latest/dist/js/unfold.js",
+        "https://cdn.jsdelivr.net/npm/ @unfold/admin@latest/dist/js/unfold.js",
     ],
     "SITE_ICON": {
-        "light": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
-        "dark": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
+        "light": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true ",
+        "dark": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true ",
     },
     "SITE_LOGO": {
-        "light": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
-        "dark": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
+        "light": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true ",
+        "dark": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true ",
     },
     "SITE_SYMBOL": "settings",
     "COLORS": {
@@ -82,12 +81,11 @@ UNFOLD = {
     },
     "DARK_MODE": False,
     "LOGIN": {
-        "image": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true",
+        "image": "https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true ",
         "redirect_after": "/admin/",
     },
     "SHOW_HISTORY": True,
 }
-
 
 # Authentication
 LOGIN_URL = '/accounts/login/'
@@ -118,7 +116,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages', 
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -172,14 +170,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Configuration CSRF obligatoire pour Render.com
+# CSRF & Security (pour Render)
 CSRF_TRUSTED_ORIGINS = [
-    'https://libis-communication.onrender.com',
-    'https://*.onrender.com'  # Wildcard pour tous les sous-domaines Render
+    'https://libis-communication.onrender.com ',
+    'https://*.onrender.com'
 ]
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 if not DEBUG:
-    # Security settings for production
+    # Production security settings
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -191,22 +191,19 @@ if not DEBUG:
     X_FRAME_OPTIONS = 'DENY'
 
 # Email configuration
-EMAIL_BACKEND = config('EMAIL_BACKEND',default='django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@libis.com')
-# SSL Configuration - only if using custom certificates
-EMAIL_SSL_CERTFILE = config('EMAIL_SSL_CERTFILE', default=None)
-EMAIL_SSL_KEYFILE = config('EMAIL_SSL_KEYFILE', default=None)
-EMAIL_TIMEOUT = 30  # seconds
+EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=30, cast=int)
+
 # Custom settings
 SITE_NAME = "Libis Communication"
-# settings.py
-DOMAIN = config('DOMAIN', default='localhost:8000')  # Défini en haut du fichier
-SITE_DOMAIN = config('SITE_DOMAIN', default='localhost:8000')
+DOMAIN = config('DOMAIN', default='localhost:8000')
+SITE_DOMAIN = config('SITE_DOMAIN', default=DOMAIN)
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
