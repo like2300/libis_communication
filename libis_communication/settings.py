@@ -10,6 +10,7 @@ from django.templatetags.static import static
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
+import dj_database_url
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -127,10 +128,15 @@ WSGI_APPLICATION = 'libis_communication.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
