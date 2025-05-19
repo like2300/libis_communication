@@ -4,6 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% comment %} seo {% endcomment %}
+    <meta name="description" content="Libis Communication  ">
+    <meta name="keywords" content="Libis Communication ">
+    <meta name="author" content="Libis Communication ">
+    <meta name="robots" content="index, follow">
+    <meta name="revisit-after" content="7 days">
+    <meta name="language" content="fr"> 
     <title> {% block title %} Libis Communication {% endblock title %} </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
@@ -304,63 +311,51 @@
         <p class="mt-6 text-xl text-white max-w-3xl">
             Libis Communication vous offre un service de communication efficace et accessible à tous.
         </p>
-        <div class="mt-10">
-        {% if user.is_authenticated %}
-            {% comment %} profile complete {% endcomment %}
-            {% if user.client.profile_complete and user.client.user == user or user.is_superuser == true %}
-
-                {% if user.is_superuser %}
-                <div class="flex items-start gap-4   w-full">
-                    <a href="{% url 'admin_dashboard' %}"
-                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
-                        Commencer {{ user }}
-                    </a>
-                    <a href="{% url 'logout' %}"
-                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                    </a>
-                </div> 
-                {% else %}
-                <div class="flex items-start gap-4   w-full">
-                    <a href="{% url 'clients' %}"
-                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
-                        Commencer {{ user }}
-                    </a>
-                    <a href="{% url 'logout' %}"
-                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                    </a>
-                </div>
-                {% endif %}
-                
-            {% else %}
-                <div class="flex items-start gap-4  w-full">
-                    <a href="{% url 'edit_client_profile' %}"
-                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
-                        Compléter mon profil  ⚠️
-                    </a>
-                    <a href="{% url 'logout' %}"
-                        class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                    </a>
-                </div>
-            {% endif %}
-        
-           
-        {% else %} 
-         <div class="flex items-start gap-4   w-full">
-            <a href="{% url 'login' %}"
-                class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
-                Connexion
-            </a>
-            <a href="{% url 'register' %}"
-                class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
-                 S'inscrire
-            </a>
-        </div> 
-
-        {% endif %}
-        </div>
+<div class="mt-10">
+  {% if user.is_authenticated %}
+    {# Section utilisateur connecté #}
+    {% if user.client.profile_complete and user.client.user == user or user.is_superuser %}
+      <div class="flex items-start gap-4 w-full">
+        <a href="{% if user.is_superuser %}{% url 'admin_dashboard' %}{% else %}{% url 'clients' %}{% endif %}"
+           class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+          {% if user.is_superuser %}Admin{% else %}Dashboard{% endif %}  
+        </a>
+        <a href="{% url 'logout' %}"
+           class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </a>
+      </div>
+    {% else %}
+      <div class="flex items-start gap-4 w-full">
+        <a href="{% url 'edit_client_profile' %}"
+           class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+          Profil
+        </a>
+        <a href="{% url 'logout' %}"
+           class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </a>
+      </div>
+    {% endif %}
+  
+  {% else %}
+    {# Section visiteur non connecté #}
+    <div class="flex items-start gap-4 w-full">
+      <a href="{% url 'login' %}"
+         class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+        Connexion
+      </a>
+      <a href="{% url 'register' %}"
+         class="inline-block bg-white py-3 px-8 border border-transparent rounded-md text-base font-medium text-red-500 hover:bg-gray-100 hover:text-red-600">
+        Inscription
+      </a>
+    </div>
+  {% endif %}
+</div>
     </div>
 </div>
         </ul>

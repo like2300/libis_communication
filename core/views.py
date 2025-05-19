@@ -636,7 +636,11 @@ def custom_authenticate(username_or_email, password):
 def login_view(request):
     """Vue de connexion utilisateur"""
     if request.user.is_authenticated:
-        return redirect('client/dashboard')  # Rediriger si l'utilisateur est déjà authentifié 
+        # profil use is admin
+        if request.user.is_superuser:
+            return redirect('admin_dashboard')
+        else:
+            return redirect('client/dashboard')  # Rediriger si l'utilisateur est déjà authentifié 
     if request.method == 'POST':
         form = LoginForm(request.POST)  # Utilisation du formulaire personnalisé
 
@@ -832,7 +836,7 @@ def create_project_view(request):
                 projet.save()
                 messages.success(request, _("Project file uploaded successfully!"))
                 logger.info(f"Project file uploaded by {request.user.username}: {projet.titre}")
-                return redirect('client_dashboard')
+                return redirect('clients')
             except Exception as e:
                 logger.error(f"Project file upload error: {str(e)}")
                 messages.error(request, _("Project file upload failed"))
@@ -888,6 +892,7 @@ def edit_profile_view(request):
         if user_form.is_valid() and client_form.is_valid():
             user_form.save()
             client.profile_complete = True
+            client.save() 
             client_form.save()
             messages.success(request, _("Profile updated successfully!"))
             return redirect('clients')
@@ -955,17 +960,15 @@ def dashboard_callback(request, context):
     return context
 
 
-
-
-@login_required 
+@login_required
 def edite_prod_user(request, pk):
-    projet = get_object_or_404(Projets_user, pk=pk)
+    projet = get_object_or_404(Projets_user, pk=pk, client=request.user.client)
     
     if request.method == 'POST':
-        form = Projets_userForms(request.POST, request.FILES, instance=projet)  # N'oubliez pas l'instance!
+        form = Projets_userForms(request.POST, request.FILES, instance=projet)
         if form.is_valid():
             form.save()
-            messages.success(request, _("Projet mis à jour avec succès"))
+            messages.success(request, "Projet mis à jour avec succès")
             return redirect('list_projects')
     else:
         form = Projets_userForms(instance=projet)
@@ -973,9 +976,8 @@ def edite_prod_user(request, pk):
     return render(request, 'libis/edit_projet.html', {
         'form': form,
         'projet': projet,
-        'user': request.user
+        'client': request.user.client  # Ajout du client au contexte
     })
- 
 
 
 

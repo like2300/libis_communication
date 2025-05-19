@@ -1,141 +1,248 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Client - {{ client.entreprise }}</title>
+    <title>{% block title %}Dashboard Client{% endblock %} - {{ client.entreprise }}</title>
+    
+    <!-- CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* Vos styles existants... */
+        :root {
+            --primary-color: #C62828;
+            --primary-hover: #E53935;
+            --sidebar-width: 260px;
+            --header-height: 64px;
+        }
+        
+        .transition-slow {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            transform: translateX(-100%);
+        }
+        
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        
+        .sidebar-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        @media (min-width: 768px) {
+            .sidebar {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: var(--sidebar-width);
+            }
+        }
         
         .disabled-link {
             pointer-events: none;
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
+        }
+        
+        .toast {
+            animation: fadeIn 0.3s, fadeOut 0.3s 2.7s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(20px); }
         }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden">
+<body class="flex h-full bg-gray-50">
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay fixed inset-0 bg-black/50 z-40" id="sidebarOverlay"></div>
+    
     <!-- Sidebar -->
-    <div class="sidebar w-64 bg-[#C62828] text-white flex flex-col">
-        <div class="p-4 border-b border-[#e53935] flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#C62828] font-bold">
+    <aside class="sidebar fixed top-0 left-0 h-screen bg-[var(--primary-color)] text-white flex flex-col z-50 shadow-xl transition-transform duration-300 ease-in-out">
+        <!-- Sidebar Header -->
+        <div class="p-4 border-b border-[var(--primary-hover)] flex items-center">
+            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[var(--primary-color)] font-bold">
                 {{ client.user.username|slice:":1"|upper }}
-             </div>
-            <div>
-                <p class="font-medium">{{ client.user.username }}</p>
-                <p class="text-xs opacity-80">Société {{ client.entreprise }} 
-                {% if client.secteur_activite %} / {{ client.secteur_activite }}</p>
-                {% endif %}
+            </div>
+            <div class="user-info ml-3 truncate">
+                <p class="font-medium truncate">{{ client.user.get_full_name|default:client.user.username }}</p>
+                <p class="text-xs opacity-80 truncate">
+                    {{ client.entreprise }}
+                    {% if client.secteur_activite %} • {{ client.secteur_activite }}{% endif %}
+                </p>
             </div>
         </div>
       
-        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
-            {% with active_class="text-white" inactive_class="text-gray-400 hover:text-white" %}
-            <a href="{% if client.profile_complete %}{% url 'clients' %}{% else %}#{% endif %}" 
-               class="sidebar-item flex items-center space-x-3 p-3 rounded-lg {% if not client.profile_complete %}disabled-link{% endif %} {% if request.path == '/client/dashboard/' %}{{ active_class }}{% else %}{{ inactive_class }}{% endif %}">
-                <i class="fas fa-tachometer-alt text-xl"></i>
-                <span>Tableau de bord</span>
+        <!-- Navigation -->
+        <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+            <a href="{% url 'clients' %}" 
+               class="sidebar-item flex items-center p-3 rounded-lg transition-slow hover:bg-white/5 {% if request.path == '/client/dashboard/' %}bg-white/10{% endif %}">
+                <i class="fas fa-tachometer-alt w-6 text-center"></i>
+                <span class="ml-3">Dashboard</span>
             </a>
             
             <a href="{% url 'edit_client_profile' %}" 
-               class="sidebar-item flex items-center space-x-3 p-3 rounded-lg {% if request.path == '/client/edit-profile/' %}{{ active_class }}{% else %}{{ inactive_class }}{% endif %}">
-                <i class="fas fa-user"></i>
-                <span>Mon profil</span>
+               class="sidebar-item flex items-center p-3 rounded-lg transition-slow hover:bg-white/5 {% if request.path == '/client/edit-profile/' %}bg-white/10{% endif %}">
+                <i class="fas fa-user-edit w-6 text-center"></i>
+                <span class="ml-3">Profil</span>
                 {% if not client.profile_complete %}
-                <span class="ml-auto bg-white text-[#C62828] text-xs px-2 py-1 rounded-full">
+                <span class="ml-auto bg-white text-[var(--primary-color)] text-xs px-2 py-1 rounded-full">
                     <i class="fas fa-exclamation-circle"></i>
                 </span>
                 {% endif %}
             </a>
             
-            <a href="{% if client.profile_complete %}{% url 'list_projects' %}{% else %}#{% endif %}" 
-               class="sidebar-item flex items-center space-x-3 p-3 rounded-lg {% if not client.profile_complete %}disabled-link{% endif %} {% if request.path == '/client/files/' %}{{ active_class }}{% else %}{{ inactive_class }}{% endif %}">
-                <i class="fas fa-project-diagram"></i>
-                <span>Mes projets</span>
+            <a href="{% url 'list_projects' %}" 
+               class="sidebar-item flex items-center p-3 rounded-lg transition-slow hover:bg-white/5 {% if 'projects' in request.path %}bg-white/10{% endif %} {% if not client.profile_complete %}disabled-link{% endif %}">
+                <i class="fas fa-project-diagram w-6 text-center"></i>
+                <span class="ml-3">Projets</span>
                 {% if client.profile_complete and client.projets.count > 0 %}
-                <span class="ml-auto bg-white text-[#C62828] text-xs px-2 py-1 rounded-full">
+                <span class="ml-auto bg-white text-[var(--primary-color)] text-xs px-2 py-1 rounded-full">
                     {{ client.projets.count }}
                 </span>
                 {% endif %}
             </a>
         </nav>
         
-        <div class="p-4 border-t border-[#e53935]">
-            <a href="{% url 'logout' %}" class="w-full flex items-center justify-center space-x-2 p-3 rounded-lg hover:bg-white hover:text-[#C62828]">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Déconnexion</span>
+        <!-- Logout -->
+        <div class="p-4 border-t border-[var(--primary-hover)]">
+            <a href="{% url 'logout' %}" class="flex items-center p-3 rounded-lg hover:bg-white hover:text-[var(--primary-color)] transition-slow">
+                <i class="fas fa-sign-out-alt w-6 text-center"></i>
+                <span class="ml-3">Déconnexion</span>
             </a>
         </div>
-        {% endwith %}
-    </div>
+    </aside>
     
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="main-content flex-1 flex flex-col overflow-hidden transition-all duration-300">
         <!-- Header -->
-        <header class="bg-white shadow-sm p-4 flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <button class="text-[#C62828] md:hidden">
-                    <i class="fas fa-bars"></i>
+        <header class="bg-white shadow-sm sticky top-0 z-30 flex items-center justify-between p-4">
+            <div class="flex items-center">
+                <button id="mobileMenuButton" class="text-[var(--primary-color)] md:hidden">
+                    <i class="fas fa-bars text-xl"></i>
                 </button>
-                <h2 class="text-xl font-semibold text-gray-800">
+                <h1 class="text-xl font-semibold text-gray-800 ml-4">
+                    {% block header_title %}
                     {% if not client.profile_complete %}
-                    Complétez votre profil pour continuer
+                    <span class="text-yellow-600"><i class="fas fa-exclamation-circle mr-2"></i>Profil à compléter</span>
                     {% else %}
-                    {% block title %}Tableau de bord{% endblock %}
+                    Dashboard
                     {% endif %}
-                </h2>
+                    {% endblock %}
+                </h1>
             </div>
 
             <button onclick="window.location.href='{% if client.profile_complete %}{% url 'create_project' %}{% else %}{% url 'edit_client_profile' %}{% endif %}'"
-                    class="bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 flex items-center space-x-2 {% if not client.profile_complete %}opacity-50 cursor-not-allowed{% endif %}">
-                <i class="fas fa-plus"></i>
-                <span>{% if client.profile_complete %}Nouveau projet{% else %}Compléter profil{% endif %}</span>
+                    class="bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-hover)] text-white px-4 py-2 rounded-lg shadow hover:shadow-md transition-all">
+                <i class="fas fa-plus mr-2"></i>
+                {% if client.profile_complete %}Nouveau Projet{% else %}Compléter Profil{% endif %}
             </button>
         </header>
 
-        <div style="overflow-y:scroll; height: 100vh;">
+        <!-- Content Area -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6">
             {% if not client.profile_complete and request.path != '/client/edit-profile/' %}
-            <div class="p-8 text-center">
-                <div class="bg-white rounded-xl p-6 max-w-2xl mx-auto shadow-md">
-                    <i class="fas fa-exclamation-triangle text-5xl text-yellow-500 mb-4"></i>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Profil incomplet</h3>
-                    <p class="text-gray-600 mb-6">Vous devez compléter votre profil avant d'accéder aux autres fonctionnalités.</p>
-                    <a href="{% url 'edit_client_profile' %}" class="bg-[#C62828] text-white px-6 py-3 rounded-lg hover:bg-[#e53935] transition">
-                        Compléter mon profil
-                    </a>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle text-yellow-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700">
+                            Vous devez compléter votre profil pour accéder à toutes les fonctionnalités.
+                            <a href="{% url 'edit_client_profile' %}" class="font-medium text-yellow-700 underline hover:text-yellow-600">
+                                Cliquez ici pour compléter
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </div>
-            {% else %}
-            {% block content %}
-            {% endblock %}
             {% endif %}
-        </div>
+            
+            {% block content %}{% endblock %}
+        </main>
         
-        <footer class="bg-white shadow-sm p-4 text-center w-full p-4 flex items-center justify-center">  
-            <p class="text-gray-600">©<script>document.write(new Date().getFullYear())</script> Libis Communication</p>
+        <!-- Footer -->
+        <footer class="bg-white p-4 text-center text-sm text-gray-500 border-t">
+            &copy; {% now "Y" %} Libis Communication. Tous droits réservés.
         </footer>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast fixed hidden bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg max-w-md z-50"></div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Menu mobile
-            const mobileMenuButton = document.querySelector('.md\\:hidden');
             const sidebar = document.querySelector('.sidebar');
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
             
-            if(mobileMenuButton && sidebar) {
-                mobileMenuButton.addEventListener('click', function() {
-                    sidebar.classList.toggle('hidden');
-                    sidebar.classList.toggle('block');
-                });
+            // Mobile menu toggle
+            mobileMenuButton.addEventListener('click', function() {
+                sidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close mobile menu
+            function closeMobileMenu() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
             }
             
-            // Redirection si profil incomplet
-            {% if not client.profile_complete and request.path != '/client/edit-profile/' %}
-            window.location.href = "{% url 'edit_client_profile' %}";
-            {% endif %}
+            sidebarOverlay.addEventListener('click', closeMobileMenu);
+            
+            // Show toast message
+            window.showToast = function(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                const colors = {
+                    info: 'bg-gray-800',
+                    success: 'bg-green-600',
+                    warning: 'bg-yellow-600',
+                    error: 'bg-red-600'
+                };
+                
+                toast.className = `toast fixed bottom-4 left-1/2 transform -translate-x-1/2 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg max-w-md z-50`;
+                toast.innerHTML = message;
+                toast.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 3000);
+            };
+            
+            // Disabled links behavior
+            document.querySelectorAll('.disabled-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.classList.contains('disabled-link')) {
+                        e.preventDefault();
+                        showToast('Veuillez compléter votre profil pour accéder à cette fonctionnalité', 'warning');
+                    }
+                });
+            });
         });
     </script>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

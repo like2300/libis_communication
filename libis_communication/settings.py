@@ -140,6 +140,7 @@ if DEBUG:
         }
     }
 else:
+
     # Database
     DATABASES = {
         'default': {
@@ -210,22 +211,24 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
-
-
- 
-
-
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
-EMAIL_HOST = config('EMAIL_HOST', default='smtp-relay.brevo.com')
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='elengaomerfils@gmail.com')
-DOMAIN = config('DOMAIN', default='localhost:8000')
-SITE_DOMAIN = config('SITE_DOMAIN', default=DOMAIN)
-EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=30, cast=int)
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+    
+if DEBUG:
+    EMAIL_BACKEND =  'django.core.mail.backends.console.EmailBackend' 
+    DOMAIN = 'localhost:8000'
+    EMAIL_USE_SSL = False
+    EMAIL_USE_TLS = True  
+else: 
+    EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+    EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+    EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+    EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+    DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='elengaomerfils@gmail.com')
+    DOMAIN = config('DOMAIN', default='localhost:8000')
+    SITE_DOMAIN = config('SITE_DOMAIN', default=DOMAIN)
+    EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=30, cast=int)
+    DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 

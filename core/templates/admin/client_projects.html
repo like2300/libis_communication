@@ -29,23 +29,18 @@
                 {% plural %}
                     {{ count }} projets actifs
                 {% endblocktrans %}
-                • 
-                {% blocktrans count count=portfolio_projects_count %}
-                    1 projet portfolio
-                {% plural %}
-                    {{ count }} projets portfolio
-                {% endblocktrans %}
+                
             </p>
         </div>
         {% if can_add_project %}
         <a href="{% url 'admin:core_projets_user_add' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-            <i class="fas fa-plus mr-2"></i> {% trans "Ajouter un projet" %}
+            <i class="fas fa-plus mr-2"></i> {% trans "Projet" %}
         </a>
         {% endif %}
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <!-- Clients Card -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
@@ -72,24 +67,13 @@
             </div>
         </div>
 
-        <!-- Portfolio Projects Card -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="mr-4 p-3 rounded-full bg-purple-50 text-purple-600">
-                    <i class="fas fa-images text-xl"></i>
-                </div>
-                <div>
-                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">{% trans "Portfolio" %}</h3>
-                    <p class="text-3xl font-semibold text-gray-800">{{ portfolio_projects_count }}</p>
-                </div>
-            </div>
-        </div>
+        
     </div>
 
     <!-- Clients List -->
     <div class="bg-white shadow rounded-lg overflow-hidden mb-8">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 class="text-lg font-semibold text-gray-800">{% trans "Clients et leurs projets" %}</h2>
+            <h2 class="text-lg font-semibold text-gray-800">{% trans "Les projets" %}</h2>
              
             <button onclick="window.location.href='{% url 'search_client' %}'" class="bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1 flex items-center space-x-2">
                 <i class="fas fa-search"></i>
@@ -108,7 +92,7 @@
                         </div>
                         <div>
                             <h3 class="font-medium text-gray-800">{{ client.entreprise }}</h3>
-                            <p class="text-sm text-gray-500">{{ client.user.email }}</p>
+                            <p class="text-sm text-gray-500">{{ client.user.email|truncatechars:20 }}</p>
                         </div>
                     </div>
                     <div class="flex items-center">

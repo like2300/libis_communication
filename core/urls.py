@@ -127,7 +127,7 @@ urlpatterns = [
     path('client/edit-profile/', edit_profile_view, name='edit_client_profile'),
     path('client/create-project/', create_project_view, name='create_project'),
     
-    path('projet/<int:pk>/edit/', edite_prod_user, name='edite_prod_user'),
+    path('projet/<int:pk>/edit/', edite_prod_user, name='edit_project'),
     
     path('projet/<int:pk>/', projet_detail_view, name='projet_detail_view'),
 

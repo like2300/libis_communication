@@ -1,30 +1,29 @@
 {% extends 'baseDash.html' %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-50 p-6">
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6">
     <div class="max-w-7xl mx-auto">
-        <!-- Header -->
-      
+       
 
-        <!-- Files Table -->
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <!-- Projects Table -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Titre
+                                Projet
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Date d'ajout
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                                Créé le
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Date début
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                                Début
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Date fin
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                                Fin
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
                             </th>
                         </tr>
@@ -32,60 +31,61 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         {% for projet in page_obj %}
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <!-- Project Info -->
+                            <td class="px-6 py-4">
                                 <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10 bg-[#ffebee] text-[#C62828] rounded-full flex items-center justify-center">
-                                        <img src="{{ projet.image.url }}" alt="Projet" class="h-full w-full rounded-full object-cover">
+                                    <div class="flex-shrink-0 h-10 w-10 bg-[#ffebee] rounded-full flex items-center justify-center overflow-hidden">
+                                        {% if projet.image %}
+                                        <img src="{{ projet.image.url }}" alt="{{ projet.titre }}" class="h-full w-full object-cover">
+                                        {% else %}
+                                        <i class="fas fa-project-diagram text-[#C62828]"></i>
+                                        {% endif %}
                                     </div>
                                     <div class="ml-4">
                                         <div class="text-sm font-medium text-gray-900">{{ projet.titre }}</div>
-                                        {% if projet.description %}
-                                        <div class="text-sm text-gray-500">{{ projet.description|truncatechars:30 }}</div>
-                                        {% endif %}
+                                        <div class="text-sm text-gray-500 truncate max-w-xs">{{ projet.description|default:"Aucune description" }}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ projet.date_ajout|date:"d/m/Y H:i" }}
+                            
+                            <!-- Dates (responsive) -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                                {{ projet.date_ajout|date:"d/m/Y" }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {% if projet.date_debut %}
-                                    {{ projet.date_debut|date:"d/m/Y" }}
-                                {% else %}
-                                    -
-                                {% endif %}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+                                {{ projet.date_debut|date:"d/m/Y"|default:"-" }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {% if projet.date_fin %}
-                                    {{ projet.date_fin|date:"d/m/Y" }}
-                                {% else %}
-                                    -
-                                {% endif %}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+                                {{ projet.date_fin|date:"d/m/Y"|default:"-" }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex space-x-2">
-                                    {% comment %} telechargement fichier et  im{% endcomment %}
-                                 
-                                    <a href="{{ projet.fichier.url }}  "  d class="text-[#C62828] hover:text-[#e53935] px-2 py-1 rounded hover:bg-[#ffebee] transition-colors" download>
-                                        
+                            
+                            <!-- Actions -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
+                                <div class="flex justify-end space-x-2">
+                                    {% if projet.fichier %}
+                                    <a href="{{ projet.fichier.url }}" download class="text-gray-600 hover:text-[#C62828] p-2 rounded-full hover:bg-gray-100 transition-colors" title="Télécharger">
                                         <i class="fas fa-download"></i>
                                     </a>
-
-                                    <a href="{% url 'edite_prod_user' projet.id %}" class="text-[#C62828] hover:text-[#e53935] px-2 py-1 rounded hover:bg-[#ffebee] transition-colors"  >
-                                         <i class="fas fa-edit"></i>
+                                    {% endif %}
+                                    
+                                    <a href="{% url 'edit_project' projet.id %}" class="text-gray-600 hover:text-[#C62828] p-2 rounded-full hover:bg-gray-100 transition-colors" title="Modifier">
+                                        <i class="fas fa-edit"></i>
                                     </a>
 
-                                    <a href="#"  onclick="deleteProject({{ projet.id }})"   class="text-[#C62828] hover:text-[#e53935] px-2 py-1 rounded hover:bg-[#ffebee] transition-colors"  >
-                                         <i class="fas fa-trash"></i>
-                                    </a>    
-                                    
+                                    <button onclick="confirmDelete({{ projet.id }})" class="text-gray-600 hover:text-[#C62828] p-2 rounded-full hover:bg-gray-100 transition-colors" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                                Aucun fichier projet trouvé
+                            <td colspan="5" class="px-6 py-8 text-center">
+                                <div class="flex flex-col items-center justify-center text-gray-400">
+                                    <i class="fas fa-folder-open text-4xl mb-2"></i>
+                                    <p class="text-lg">Aucun projet trouvé</p>
+                                    <p class="text-sm mt-2">Commencez par créer votre premier projet</p>
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -96,6 +96,7 @@
             <!-- Pagination -->
             {% if page_obj.has_other_pages %}
             <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <!-- Mobile pagination -->
                 <div class="flex-1 flex justify-between sm:hidden">
                     {% if page_obj.has_previous %}
                     <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
@@ -108,10 +109,12 @@
                     </a>
                     {% endif %}
                 </div>
+                
+                <!-- Desktop pagination -->
                 <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                     <div>
                         <p class="text-sm text-gray-700">
-                            Affichage de <span class="font-medium">{{ page_obj.start_index }}</span> à <span class="font-medium">{{ page_obj.end_index }}</span> sur <span class="font-medium">{{ page_obj.paginator.count }}</span> résultats
+                            Affichage <span class="font-medium">{{ page_obj.start_index }}</span> à <span class="font-medium">{{ page_obj.end_index }}</span> sur <span class="font-medium">{{ page_obj.paginator.count }}</span> projets
                         </p>
                     </div>
                     <div>
@@ -125,7 +128,7 @@
 
                             {% for num in page_obj.paginator.page_range %}
                                 {% if page_obj.number == num %}
-                                <a href="?page={{ num }}" class="relative inline-flex items-center px-4 py-2 border border-[#C62828] bg-[#C62828] text-sm font-medium text-white">
+                                <a href="?page={{ num }}" aria-current="page" class="relative inline-flex items-center px-4 py-2 border border-[#C62828] bg-[#C62828] text-sm font-medium text-white">
                                     {{ num }}
                                 </a>
                                 {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
@@ -150,27 +153,83 @@
     </div>
 </div>
 
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <div class="flex justify-between items-start mb-4">
+            <h3 class="text-lg font-bold text-gray-900">Confirmer la suppression</h3>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-500">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <p class="mb-6">Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.</p>
+        <div class="flex justify-end space-x-3">
+            <button onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                Annuler
+            </button>
+            <button id="confirmDeleteBtn" class="px-4 py-2 bg-[#C62828] text-white rounded-md hover:bg-[#B71C1C]">
+                Supprimer
+            </button>
+        </div>
+    </div>
+</div>
 
 <script>
-function deleteProject(projectId) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
-        fetch(`/projet/${projectId}/delete/`, {
+let currentProjectId = null;
+
+// Delete confirmation modal
+function confirmDelete(projectId) {
+    currentProjectId = projectId;
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    if (currentProjectId) {
+        fetch(`/projet/${currentProjectId}/delete/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': '{{ csrf_token }}',
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
             },
+            body: JSON.stringify({})
         })
         .then(response => {
             if (response.ok) {
-                window.location.reload(); // Recharger la page après suppression
+                window.location.reload();
             } else {
                 alert('Erreur lors de la suppression');
+                closeModal();
             }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            closeModal();
         });
     }
-}
-</script>
-{% endblock %}
+});
 
- 
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+});
+</script>
+
+<style>
+@media (max-width: 640px) {
+    .project-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .project-image {
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
+{% endblock %}
