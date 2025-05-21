@@ -1,15 +1,91 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erreur 403 - Libis Communication</title>
+  <meta charset="UTF-8" />
+  <title>Erreur 403 - Libis Communication</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #1a1a1a;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100%;
+      overflow: hidden;
+    }
+    #container {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+    .overlay {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1;
+    }
+    .overlay h1 {
+      font-size: 3em;
+      color: #ff4d4d;
+      margin-bottom: 0.5em;
+    }
+    .overlay p {
+      font-size: 1.2em;
+      color: #cccccc;
+    }
+  </style>
 </head>
 <body>
-    <h1>Erreur 403 - Libis Communication</h1>
-    <p>Vous n'avez pas les permissions pour accéder à cette page.</p>
+  <div id="container"></div>
+  <div class="overlay">
+    <h1>Erreur 403</h1>
+    <p>Une erreur s'est produite lors de la requête.</p>
     <p>Veuillez réessayer ultérieurement.</p>
-</body> 
+  </div>
+
+  <!-- Inclusion de Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+
+  <script>
+    // Initialisation de la scène, de la caméra et du rendu
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('container').appendChild(renderer.domElement);
+
+    // Création d'une géométrie animée (par exemple, un tore)
+    const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+    const material = new THREE.MeshStandardMaterial({ color: 0xff4d4d, metalness: 0.5, roughness: 0.5 });
+    const torusKnot = new THREE.Mesh(geometry, material);
+    scene.add(torusKnot);
+
+    // Ajout d'une lumière directionnelle
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(0, 20, 20);
+    scene.add(light);
+
+    // Positionnement de la caméra
+    camera.position.z = 30;
+
+    // Animation de la scène
+    function animate() {
+      requestAnimationFrame(animate);
+      torusKnot.rotation.x += 0.01;
+      torusKnot.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Ajustement de la taille du rendu lors du redimensionnement de la fenêtre
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
 </html>

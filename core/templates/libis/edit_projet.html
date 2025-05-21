@@ -1,8 +1,25 @@
 {% extends 'baseDash.html' %}
+{% load static %}
 {% block title %}Modifier le Projet{% endblock %}
+{% block meta_description %}Modifier le Projet{% endblock %}
+{% block meta_tags %}
+    <meta name="description" content="Modifier le Projet">
+    <meta property="og:title" content="Modifier le Projet"> 
+    <meta property="og:description" content="Modifier le Projet">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% static 'images/apple-icon-180x180.png' %}">
+    <meta property="og:site_name" content="LIBIS Communication">
+    <meta property="og:locale" content="fr_FR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{% static 'images/apple-icon-180x180.png' %}">
+{% endblock %}
 {% block content %}
-{% load static i18n %}
+{% load  i18n %}
+
 {% load widget_tweaks %}
+
+
 
 <div class="min-h-screen bg-gray-50 p-4 md:p-8">
   <div class="max-w-6xl mx-auto">

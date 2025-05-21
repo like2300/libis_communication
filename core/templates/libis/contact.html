@@ -55,7 +55,7 @@
             </div>
 
             <!-- Formulaire de contact -->
-            <form id="contactForm" class="mt-8 space-y-6" method="POST" action="{% url 'contact %}">
+            <form id="contactForm" class="mt-8 space-y-6" method="POST" action="{% url 'contact' %}">
                 {% csrf_token %}
                 
                 <!-- Champ Nom -->
@@ -115,23 +115,25 @@
 </section>
 
 <script>
-document.getElementById('contactForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    const confirmation = confirm("Voulez-vous envoyer ce message ?");
-    
-    if (confirmation) {
-        // Afficher un indicateur de chargement
-        const submitBtn = this.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = 'Envoi en cours...';
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+        event.preventDefault();
         
-        // Soumettre le formulaire après un léger délai pour l'UX
-        setTimeout(() => {
-            this.submit();
-        }, 500);
-    }
-});
+        const confirmation = confirm("Voulez-vous envoyer ce message ?");
+        
+        if (confirmation) {
+            // Afficher un indicateur de chargement
+            const submitBtn = this.querySelector('button[type="submit"]');
+            {% comment %} url submit {% endcomment %}
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Envoi en cours...';
+            
+            // Soumettre le formulaire après un léger délai pour l'UX
+            setTimeout(() => {
+                this.submit();
+            }, 500);
+        }
+    });
 </script>
 
 {% endblock %}

@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block meta_description %}Notre Équipe{% endblock %}
+{% block meta_tags %}
+    <meta name="description" content="Notre Équipe">    
+    <meta property="og:title" content="Notre Équipe"> 
+    <meta property="og:description" content="Notre Équipe">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% static 'images/apple-icon-180x180.png' %}">
+    <meta property="og:site_name" content="LIBIS Communication">
+    <meta property="og:locale" content="fr_FR">
+    <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
 {% block title %}Notre Équipe{% endblock %}
 
 {% block content %}

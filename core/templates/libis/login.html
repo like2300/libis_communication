@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
+
 {% load static %}
+
+{% block meta_description %}Connexion{% endblock %}
+{% block meta_tags %}
+    <meta name="description" content="Connexion">
+    <meta property="og:title" content="Connexion"> 
+    <meta property="og:description" content="Connexion">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% static 'images/apple-icon-180x180.png' %}">
+    <meta property="og:site_name" content="LIBIS Communication">
+    <meta property="og:locale" content="fr_FR">
+    <meta name="twitter:card" content="summary_large_image">  
+    <meta name="twitter:image" content="{% static 'images/apple-icon-180x180.png' %}">
+{% endblock %}
 
 {% block content %}
 <div class="min-h-screen bg-gray-100 flex items-center justify-center p-4">
