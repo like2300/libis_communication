@@ -5,18 +5,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% comment %} seo {% endcomment %}
-    <meta name="description" content="Libis Communication  ">
-    <meta name="keywords" content="Libis Communication ">
-    <meta name="author" content="Libis Communication ">
-    <meta name="robots" content="index, follow">
-    <meta name="revisit-after" content="7 days">
-    <meta name="language" content="fr"> 
-    <title> {% block title %} Libis Communication {% endblock title %} </title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-    {% comment %} link icons nav {% endcomment %}
-    <link rel="icon" href="https://github.com/like2300/libis_communication/blob/main/media/accueil/lbs.PNG?raw=true" type="image/png">
+   <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Dynamique -->
+    <title>
+        {% block title %}
+            {% if title %}{{ title }} | LIBIS Communication{% else %}LIBIS Communication - Agence Créative à Casablanca{% endif %}
+        {% endblock %}
+    </title>
+    
+    <meta name="description" content="{% block meta_description %}Agence LIBIS Communication à Casablanca - Solutions complètes en communication visuelle, digitale, audiovisuelle et événementielle.{% endblock %}">
+    
+    <!-- Balises méta dynamiques selon la page -->
+    {% block meta_tags %}
+        <meta name="keywords" content="agence communication Casablanca, communication visuelle Maroc, marketing digital, création audiovisuelle, organisation événements">
+        <meta property="og:title" content="LIBIS Communication - Agence Créative">
+        <meta property="og:description" content="Solutions innovantes en communication pour votre entreprise au Maroc">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ request.build_absolute_uri }}">
+        <meta property="og:image" content="{% static 'images/og-libis.jpg' %}">
+        <meta property="og:site_name" content="LIBIS Communication">
+        <meta property="og:locale" content="fr_FR">
+        <meta name="twitter:card" content="summary_large_image">
+    {% endblock %}
+    
+    <!-- Canonical URL dynamique -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    
+    <!-- Schema.org markup for Google - Adapté selon la page -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "{% block schema_type %}ProfessionalService{% endblock %}",
+        "name": "LIBIS Communication",
+        "url": "{{ request.scheme }}://{{ request.get_host }}",
+        "logo": "{% static 'images/logo-libis.png' %}",
+        "description": "Agence de communication créative à Casablanca",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Casablanca",
+            "addressCountry": "MA"
+        },
+        "sameAs": [
+            "https://www.facebook.com/libis.communication",
+            "https://www.instagram.com/libis.communication",
+            "https://www.linkedin.com/company/libis-communication"
+        ]
+        {% block extra_schema %}{% endblock %}
+    }
+    </script>
 
+    <!-- Tracking (à configurer) -->
+    {% if not debug %}
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-XXXXXX');</script>
+    <!-- End Google Tag Manager -->
+    {% endif %}
+    
+    <!-- Balises spécifiques pour les pages de blog -->
+    {% block extra_head %}{% endblock %}
+    
+<!-- Favicons pour Django -->
+<link rel="apple-touch-icon" sizes="57x57" href="{% static 'images/apple-icon-57x57.png' %}">
+<link rel="apple-touch-icon" sizes="60x60" href="{% static 'images/apple-icon-60x60.png' %}">
+<link rel="apple-touch-icon" sizes="72x72" href="{% static 'images/apple-icon-72x72.png' %}">
+<link rel="apple-touch-icon" sizes="76x76" href="{% static 'images/apple-icon-76x76.png' %}">
+<link rel="apple-touch-icon" sizes="114x114" href="{% static 'images/apple-icon-114x114.png' %}">
+<link rel="apple-touch-icon" sizes="120x120" href="{% static 'images/apple-icon-120x120.png' %}">
+<link rel="apple-touch-icon" sizes="144x144" href="{% static 'images/apple-icon-144x144.png' %}">
+<link rel="apple-touch-icon" sizes="152x152" href="{% static 'images/apple-icon-152x152.png' %}">
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-icon-180x180.png' %}">
+
+<link rel="icon" type="image/png" sizes="192x192" href="{% static 'images/android-icon-192x192.png' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+<link rel="icon" type="image/png" sizes="96x96" href="{% static 'images/favicon-96x96.png' %}">
+<link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+
+<!-- Spécifique pour votre icône 36x36 -->
+<link rel="icon" type="image/png" sizes="36x36" href="{% static 'images/android-icon-36x36.png' %}">
+
+<!-- Fichiers de configuration -->
+<link rel="manifest" href="{% static 'js/manifest.json' %}">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="{% static 'images/ms-icon-144x144.png' %}">
+<meta name="theme-color" content="#ffffff">
 
 
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
